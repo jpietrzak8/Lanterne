@@ -1,3 +1,8 @@
+lanterne (0.1.0) unstable; urgency=low
+  * Added Morse Code functionality!
+
+ -- John Pietrzak <jpietrzak8@gmail.com>  Sun, 26 May 2013 20:16:35 -0400
+
 lanterne (0.0.1) unstable; urgency=low
 
   * Initial Release.

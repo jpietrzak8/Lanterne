@@ -135,6 +135,18 @@ void LanFlashLED::toggleTorch()
 }
 
 
+void LanFlashLED::turnTorchOn()
+{
+  if (!torchOn) toggleTorch();
+}
+
+
+void LanFlashLED::turnTorchOff()
+{
+  if (torchOn) toggleTorch();
+}
+
+
 int LanFlashLED::getMinFlash()
 {
   return minFlash;
@@ -156,6 +168,12 @@ int LanFlashLED::getMinTime()
 int LanFlashLED::getMaxTime()
 {
   return maxTime;
+}
+
+
+int LanFlashLED::getChosenTime()
+{
+  return chosenTime;
 }
 
 

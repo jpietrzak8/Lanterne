@@ -4,26 +4,34 @@
 #include <QtCore/QCoreApplication>
 
 #include "lanflashled.h"
+#include "lanaboutform.h"
+#include "lanmorseform.h"
 #include <QTimer>
 
 MainWindow::MainWindow(
   QWidget *parent)
   : QMainWindow(parent),
     led(0),
+    aboutForm(0),
+    morseForm(0),
     minPause(100),
     maxPause(2000),
     chosenPause(500),
     ui(new Ui::MainWindow)
 {
-  led = new LanFlashLED();
-
   ui->setupUi(this);
+
+  setAttribute(Qt::WA_Maemo5StackedWindow);
+
+  led = new LanFlashLED();
 
   // set up the spin boxes:
   ui->torchBrightnessSpinBox->setMinimum(led->getMinTorch());
   ui->torchBrightnessSpinBox->setMaximum(led->getMaxTorch());
+  ui->torchBrightnessSpinBox->setValue(led->getMaxTorch());
   ui->flashBrightnessSpinBox->setMinimum(led->getMinFlash());
   ui->flashBrightnessSpinBox->setMaximum(led->getMaxFlash());
+  ui->flashBrightnessSpinBox->setValue(led->getMinFlash());
   ui->flashDurationSpinBox->setMinimum(led->getMinTime() / 1000);
   ui->flashDurationSpinBox->setMaximum(led->getMaxTime() / 1000);
   ui->flashDurationSpinBox->setValue((led->getMaxTime() / 1000) / 2);
@@ -37,6 +45,8 @@ MainWindow::~MainWindow()
   if (ledTimer) delete ledTimer;
 
   if (led) delete led;
+  if (morseForm) delete morseForm;
+  if (aboutForm) delete aboutForm;
 
   delete ui;
 }
@@ -144,7 +154,8 @@ void MainWindow::on_strobeFlashButton_pressed()
   {
     ledTimer = new QTimer(this);
     connect(ledTimer, SIGNAL(timeout()), this, SLOT(strobe()));
-    ledTimer->start(chosenPause);
+
+    ledTimer->start(chosenPause + (led->getChosenTime() / 1000));
   }
 }
 
@@ -162,4 +173,36 @@ void MainWindow::on_strobeFlashButton_released()
 void MainWindow::strobe()
 {
   led->strobe();
+}
+
+void MainWindow::on_actionMorse_Code_triggered()
+{
+  if (!morseForm)
+  {
+    morseForm = new LanMorseForm(this);
+  }
+
+  morseForm->show();
+}
+
+void MainWindow::on_actionAbout_triggered()
+{
+  if (!aboutForm)
+  {
+    aboutForm = new LanAboutForm(this);
+  }
+
+  aboutForm->show();
+}
+
+
+void MainWindow::turnTorchOn()
+{
+  led->turnTorchOn();
+}
+
+
+void MainWindow::turnTorchOff()
+{
+  led->turnTorchOff();
 }

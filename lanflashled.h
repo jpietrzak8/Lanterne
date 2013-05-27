@@ -42,12 +42,18 @@ public:
   void setTorchBrightness(
     int brightness);
 
+  // Toggle on/off command:
   void toggleTorch();
+
+  // Discrete on/off commands:
+  void turnTorchOn();
+  void turnTorchOff();
 
   int getMinFlash();
   int getMaxFlash();
   int getMinTime();
   int getMaxTime();
+  int getChosenTime();
 
   void setFlashBrightness(
     int brightness);

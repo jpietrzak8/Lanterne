@@ -135,7 +135,25 @@
      <height>22</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuLanterne">
+    <property name="title">
+     <string>Lanterne</string>
+    </property>
+    <addaction name="actionMorse_Code"/>
+    <addaction name="actionAbout"/>
+   </widget>
+   <addaction name="menuLanterne"/>
   </widget>
+  <action name="actionMorse_Code">
+   <property name="text">
+    <string>Morse Code</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>

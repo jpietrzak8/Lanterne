@@ -26,11 +26,17 @@ QT += Maemo5
 
 SOURCES += main.cpp mainwindow.cpp \
     lanflashled.cpp \
-    lanexception.cpp
+    lanexception.cpp \
+    lanaboutform.cpp \
+    lanmorseform.cpp
 HEADERS += mainwindow.h \
     lanflashled.h \
-    lanexception.h
-FORMS += mainwindow.ui
+    lanexception.h \
+    lanaboutform.h \
+    lanmorseform.h
+FORMS += mainwindow.ui \
+    lanaboutform.ui \
+    lanmorseform.ui
 
 # Please do not modify the following two lines. Required for deployment.
 include(deployment.pri)
@@ -42,4 +48,8 @@ OTHER_FILES += \
     qtc_packaging/debian_fremantle/copyright \
     qtc_packaging/debian_fremantle/control \
     qtc_packaging/debian_fremantle/compat \
-    qtc_packaging/debian_fremantle/changelog
+    qtc_packaging/debian_fremantle/changelog \
+    doc/about.html
+
+RESOURCES += \
+    LanterneResources.qrc

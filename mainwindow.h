@@ -4,6 +4,8 @@
 #include <QtGui/QMainWindow>
 
 class LanFlashLED;
+class LanAboutForm;
+class LanMorseForm;
 class QTimer;
 
 namespace Ui {
@@ -28,6 +30,9 @@ public:
 
   void showExpanded();
 
+  void turnTorchOn();
+  void turnTorchOff();
+
 private slots:
   void on_torchBrightnessSpinBox_valueChanged(int arg1);
   void on_torchPushButton_clicked();
@@ -41,8 +46,13 @@ private slots:
 
   void strobe();
 
+  void on_actionMorse_Code_triggered();
+  void on_actionAbout_triggered();
+
 private:
   LanFlashLED *led;
+  LanAboutForm *aboutForm;
+  LanMorseForm *morseForm;
 
   int minPause;
   int maxPause;
