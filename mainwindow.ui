@@ -32,95 +32,23 @@
      </widget>
     </item>
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
-       <widget class="QLabel" name="sustainLabel">
-        <property name="text">
-         <string>Torch Brightness Level</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QSpinBox" name="torchBrightnessSpinBox"/>
-      </item>
-     </layout>
-    </item>
-    <item>
-     <widget class="QPushButton" name="torchPushButton">
+     <widget class="QPushButton" name="torchButton">
       <property name="text">
-       <string>Torch On/Off</string>
+       <string>Torch</string>
       </property>
      </widget>
     </item>
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
-      <item>
-       <widget class="QLabel" name="flashBrightLabel">
-        <property name="text">
-         <string>Flash Brightness Level</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QSpinBox" name="flashBrightnessSpinBox"/>
-      </item>
-     </layout>
-    </item>
-    <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_3">
-      <item>
-       <widget class="QLabel" name="flashDurationLabel">
-        <property name="text">
-         <string>Flash Duration (millisec)</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QSpinBox" name="flashDurationSpinBox">
-        <property name="minimum">
-         <number>10</number>
-        </property>
-        <property name="maximum">
-         <number>1000</number>
-        </property>
-        <property name="singleStep">
-         <number>10</number>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_4">
-      <item>
-       <widget class="QLabel" name="pauseLabel">
-        <property name="text">
-         <string>Strobe Pause (millisec)</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QSpinBox" name="flashPauseSpinBox">
-        <property name="minimum">
-         <number>100</number>
-        </property>
-        <property name="maximum">
-         <number>10000</number>
-        </property>
-        <property name="singleStep">
-         <number>100</number>
-        </property>
-        <property name="value">
-         <number>1000</number>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item>
-     <widget class="QPushButton" name="strobeFlashButton">
+     <widget class="QPushButton" name="strobeButton">
       <property name="text">
-       <string>Strobe Flash</string>
+       <string>Strobe</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="morseButton">
+      <property name="text">
+       <string>Morse Code</string>
       </property>
      </widget>
     </item>
@@ -139,16 +67,10 @@
     <property name="title">
      <string>Lanterne</string>
     </property>
-    <addaction name="actionMorse_Code"/>
     <addaction name="actionAbout"/>
    </widget>
    <addaction name="menuLanterne"/>
   </widget>
-  <action name="actionMorse_Code">
-   <property name="text">
-    <string>Morse Code</string>
-   </property>
-  </action>
   <action name="actionAbout">
    <property name="text">
     <string>About</string>

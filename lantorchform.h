@@ -1,7 +1,7 @@
 //
-// lanexception.cpp
+// lantorchform.h
 //
-// Copyright 2013 by John Pietrzak (jpietrzak8@gmail.com)
+// Copyright 2013 by John Pietrzak  (jpietrzak8@gmail.com)
 //
 // This file is part of Lanterne.
 //
@@ -20,21 +20,35 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 //
 
-#include "lanexception.h"
+#ifndef LANTORCHFORM_H
+#define LANTORCHFORM_H
 
-#include <QtGui/QMessageBox>
+#include <QWidget>
 
-/*
-PirException::PirException()
-{
+namespace Ui {
+class LanTorchForm;
 }
-*/
 
+class MainWindow;
 
-void LanException::display()
+class LanTorchForm : public QWidget
 {
-  QMessageBox errBox;
-  errBox.setText(errStr.c_str());
-  errBox.setIcon(QMessageBox::Warning);
-  errBox.exec();
-}
+  Q_OBJECT
+  
+public:
+  LanTorchForm(
+    MainWindow *mw);
+
+  ~LanTorchForm();
+  
+private slots:
+  void on_torchBrightnessSpinBox_valueChanged(int arg1);
+  void on_torchPushButton_clicked();
+
+private:
+  MainWindow *mainWindow;
+
+  Ui::LanTorchForm *ui;
+};
+
+#endif // LANTORCHFORM_H

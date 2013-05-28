@@ -1,3 +1,25 @@
+//
+// mainwindow.cpp
+//
+// Copyright 2013 by John Pietrzak (jpietrzak8@gmail.com)
+//
+// This file is part of Lanterne.
+//
+// Lanterne is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License
+// as published by the Free Software Foundation; either version 2
+// of the License, or (at your option) any later version.
+//
+// Lanterne is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Lanterne; if not, write to the Free Software Foundation,
+// Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+//
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
@@ -5,6 +27,8 @@
 
 #include "lanflashled.h"
 #include "lanaboutform.h"
+#include "lantorchform.h"
+#include "lanstrobeform.h"
 #include "lanmorseform.h"
 #include <QTimer>
 
@@ -13,10 +37,9 @@ MainWindow::MainWindow(
   : QMainWindow(parent),
     led(0),
     aboutForm(0),
+    torchForm(0),
+    strobeForm(0),
     morseForm(0),
-    minPause(100),
-    maxPause(2000),
-    chosenPause(500),
     ui(new Ui::MainWindow)
 {
   ui->setupUi(this);
@@ -24,29 +47,15 @@ MainWindow::MainWindow(
   setAttribute(Qt::WA_Maemo5StackedWindow);
 
   led = new LanFlashLED();
-
-  // set up the spin boxes:
-  ui->torchBrightnessSpinBox->setMinimum(led->getMinTorch());
-  ui->torchBrightnessSpinBox->setMaximum(led->getMaxTorch());
-  ui->torchBrightnessSpinBox->setValue(led->getMaxTorch());
-  ui->flashBrightnessSpinBox->setMinimum(led->getMinFlash());
-  ui->flashBrightnessSpinBox->setMaximum(led->getMaxFlash());
-  ui->flashBrightnessSpinBox->setValue(led->getMinFlash());
-  ui->flashDurationSpinBox->setMinimum(led->getMinTime() / 1000);
-  ui->flashDurationSpinBox->setMaximum(led->getMaxTime() / 1000);
-  ui->flashDurationSpinBox->setValue((led->getMaxTime() / 1000) / 2);
-  ui->flashPauseSpinBox->setMinimum(minPause);
-  ui->flashPauseSpinBox->setMaximum(maxPause);
-  ui->flashPauseSpinBox->setValue(chosenPause);
 }
 
 MainWindow::~MainWindow()
 {
-  if (ledTimer) delete ledTimer;
-
   if (led) delete led;
-  if (morseForm) delete morseForm;
   if (aboutForm) delete aboutForm;
+  if (torchForm) delete torchForm;
+  if (strobeForm) delete strobeForm;
+  if (morseForm) delete morseForm;
 
   delete ui;
 }
@@ -105,94 +114,28 @@ void MainWindow::showExpanded()
 #endif
 }
 
-void MainWindow::on_torchBrightnessSpinBox_valueChanged(int arg1)
+
+int MainWindow::getMinTorch()
+{
+  return led->getMinTorch();
+}
+
+
+int MainWindow::getMaxTorch()
+{
+  return led->getMaxTorch();
+}
+
+
+void MainWindow::setTorchBrightness(int arg1)
 {
   led->setTorchBrightness(arg1);
 }
 
-void MainWindow::on_torchPushButton_clicked()
+
+void MainWindow::toggleTorch()
 {
   led->toggleTorch();
-}
-
-void MainWindow::on_flashBrightnessSpinBox_valueChanged(int arg1)
-{
-  led->setFlashBrightness(arg1);
-}
-
-void MainWindow::on_flashDurationSpinBox_valueChanged(int arg1)
-{
-  led->setFlashDuration(arg1 * 1000);
-}
-
-void MainWindow::on_flashPauseSpinBox_valueChanged(int arg1)
-{
-  if (arg1 < minPause)
-  {
-    chosenPause = minPause;
-  }
-  else if (arg1 > maxPause)
-  {
-    chosenPause = maxPause;
-  }
-  else
-  {
-    chosenPause = arg1;
-  }
-}
-
-/*
-void MainWindow::on_strobeFlashButton_clicked()
-{
-  led->strobe();
-}
-*/
-
-void MainWindow::on_strobeFlashButton_pressed()
-{
-  if (!ledTimer)
-  {
-    ledTimer = new QTimer(this);
-    connect(ledTimer, SIGNAL(timeout()), this, SLOT(strobe()));
-
-    ledTimer->start(chosenPause + (led->getChosenTime() / 1000));
-  }
-}
-
-
-void MainWindow::on_strobeFlashButton_released()
-{
-  if (ledTimer)
-  {
-    delete ledTimer;
-    ledTimer = 0;
-  }
-}
-
-
-void MainWindow::strobe()
-{
-  led->strobe();
-}
-
-void MainWindow::on_actionMorse_Code_triggered()
-{
-  if (!morseForm)
-  {
-    morseForm = new LanMorseForm(this);
-  }
-
-  morseForm->show();
-}
-
-void MainWindow::on_actionAbout_triggered()
-{
-  if (!aboutForm)
-  {
-    aboutForm = new LanAboutForm(this);
-  }
-
-  aboutForm->show();
 }
 
 
@@ -205,4 +148,94 @@ void MainWindow::turnTorchOn()
 void MainWindow::turnTorchOff()
 {
   led->turnTorchOff();
+}
+
+
+int MainWindow::getMinFlash()
+{
+  return led->getMinFlash();
+}
+
+
+int MainWindow::getMaxFlash()
+{
+  return led->getMaxFlash();
+}
+
+
+int MainWindow::getMinTime()
+{
+  return led->getMinTime();
+}
+
+
+int MainWindow::getMaxTime()
+{
+  return led->getMaxTime();
+}
+
+
+int MainWindow::getChosenTime()
+{
+  return led->getChosenTime();
+}
+
+
+void MainWindow::setFlashBrightness(int arg1)
+{
+  led->setFlashBrightness(arg1);
+}
+
+void MainWindow::setFlashDuration(int arg1)
+{
+  led->setFlashDuration(arg1);
+}
+
+
+void MainWindow::strobe()
+{
+  led->strobe();
+}
+
+
+void MainWindow::on_actionAbout_triggered()
+{
+  if (!aboutForm)
+  {
+    aboutForm = new LanAboutForm(this);
+  }
+
+  aboutForm->show();
+}
+
+void MainWindow::on_torchButton_clicked()
+{
+  if (!torchForm)
+  {
+    torchForm = new LanTorchForm(this);
+  }
+
+  torchForm->show();
+}
+
+
+void MainWindow::on_strobeButton_clicked()
+{
+  if (!strobeForm)
+  {
+    strobeForm = new LanStrobeForm(this);
+  }
+
+  strobeForm->show();
+}
+
+
+void MainWindow::on_morseButton_clicked()
+{
+  if (!morseForm)
+  {
+    morseForm = new LanMorseForm(this);
+  }
+
+  morseForm->show();
 }

@@ -37,8 +37,8 @@
 LanFlashLED::LanFlashLED()
   : fileDescriptor(-1),
     minTorch(0),
-    maxTorch(0),
-    chosenTorch(0),
+    maxTorch(1),
+    chosenTorch(1),
     torchOn(false),
     minFlash(12),
     maxFlash(19),
@@ -321,5 +321,5 @@ void LanFlashLED::openFlashDevice()
 
   minTorch = qctrl.minimum;
   maxTorch = qctrl.maximum;
-  chosenTorch = qctrl.minimum;
+  chosenTorch = qctrl.maximum;
 }

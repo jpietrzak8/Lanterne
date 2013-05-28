@@ -1,7 +1,7 @@
 //
-// lanexception.cpp
+// lanstrobeform.h
 //
-// Copyright 2013 by John Pietrzak (jpietrzak8@gmail.com)
+// Copyright 2013 by John Pietrzak  (jpietrzak8@gmail.com)
 //
 // This file is part of Lanterne.
 //
@@ -20,21 +20,43 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 //
 
-#include "lanexception.h"
+#ifndef LANSTROBEFORM_H
+#define LANSTROBEFORM_H
 
-#include <QtGui/QMessageBox>
+#include <QWidget>
 
-/*
-PirException::PirException()
-{
+namespace Ui {
+class LanStrobeForm;
 }
-*/
 
+class MainWindow;
 
-void LanException::display()
+class LanStrobeForm : public QWidget
 {
-  QMessageBox errBox;
-  errBox.setText(errStr.c_str());
-  errBox.setIcon(QMessageBox::Warning);
-  errBox.exec();
-}
+  Q_OBJECT
+  
+public:
+  LanStrobeForm(
+    MainWindow *mw);
+
+  ~LanStrobeForm();
+
+private slots:
+  void on_flashBrightnessSpinBox_valueChanged(int arg1);
+  void on_flashDurationSpinBox_valueChanged(int arg1);
+  void on_flashPauseSpinBox_valueChanged(int arg1);
+  void on_strobeFlashButton_pressed();
+  void on_strobeFlashButton_released();
+  
+private:
+  MainWindow *mainWindow;
+
+  int minPause;
+  int maxPause;
+  int chosenPause;
+  QTimer *ledTimer;
+
+  Ui::LanStrobeForm *ui;
+};
+
+#endif // LANSTROBEFORM_H

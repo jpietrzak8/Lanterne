@@ -1,5 +1,5 @@
 //
-// lanexception.cpp
+// lantorchform.cpp
 //
 // Copyright 2013 by John Pietrzak (jpietrzak8@gmail.com)
 //
@@ -20,21 +20,39 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 //
 
-#include "lanexception.h"
+#include "lantorchform.h"
+#include "ui_lantorchform.h"
 
-#include <QtGui/QMessageBox>
+#include "mainwindow.h"
 
-/*
-PirException::PirException()
+LanTorchForm::LanTorchForm(
+  MainWindow *mw)
+  : QWidget(mw),
+    mainWindow(mw),
+    ui(new Ui::LanTorchForm)
 {
+  ui->setupUi(this);
+
+  setAttribute(Qt::WA_Maemo5StackedWindow);
+  setWindowFlags(windowFlags() | Qt::Window);
+
+  // set up the spin box:
+  ui->torchBrightnessSpinBox->setMinimum(mainWindow->getMinTorch());
+  ui->torchBrightnessSpinBox->setMaximum(mainWindow->getMaxTorch());
+  ui->torchBrightnessSpinBox->setValue(mainWindow->getMaxTorch());
 }
-*/
 
-
-void LanException::display()
+LanTorchForm::~LanTorchForm()
 {
-  QMessageBox errBox;
-  errBox.setText(errStr.c_str());
-  errBox.setIcon(QMessageBox::Warning);
-  errBox.exec();
+  delete ui;
+}
+
+void LanTorchForm::on_torchBrightnessSpinBox_valueChanged(int arg1)
+{
+  mainWindow->setTorchBrightness(arg1);
+}
+
+void LanTorchForm::on_torchPushButton_clicked()
+{
+  mainWindow->toggleTorch();
 }
