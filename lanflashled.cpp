@@ -38,7 +38,6 @@ LanFlashLED::LanFlashLED()
   : fileDescriptor(-1),
     minTorch(0),
     maxTorch(1),
-    chosenTorch(1),
     torchOn(false),
     minFlash(12),
     maxFlash(19),
@@ -69,36 +68,6 @@ LanFlashLED::~LanFlashLED()
 }
 
 
-int LanFlashLED::getMinTorch()
-{
-  return minTorch;
-}
-
-
-int LanFlashLED::getMaxTorch()
-{
-  return maxTorch;
-}
-
-
-void LanFlashLED::setTorchBrightness(
-  int brightness)
-{
-  if (brightness < minTorch)
-  {
-    chosenTorch = minTorch;
-  }
-  else if (brightness > maxTorch)
-  {
-    chosenTorch = maxTorch;
-  }
-  else
-  {
-    chosenTorch = brightness;
-  }
-}
-
-
 void LanFlashLED::toggleTorch()
 {
   struct v4l2_control ctrl;
@@ -121,14 +90,14 @@ void LanFlashLED::toggleTorch()
   else
   {
     // Turn torch on:
-    ctrl.value = chosenTorch;
+    ctrl.value = maxTorch;
     torchOn = true;
   }
 
   if (ioctl(fileDescriptor, VIDIOC_S_CTRL, &ctrl) == -1)
   {
     std::stringstream ss;
-    ss << "Failed to set torch intensity to " << chosenTorch << "\n";
+    ss << "Failed to set torch intensity to " << ctrl.value << "\n";
     ss << "Error is " << strerror(errno) << "\n";
     throw LanException(ss.str());
   }
@@ -321,5 +290,4 @@ void LanFlashLED::openFlashDevice()
 
   minTorch = qctrl.minimum;
   maxTorch = qctrl.maximum;
-  chosenTorch = qctrl.maximum;
 }

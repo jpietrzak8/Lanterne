@@ -1,3 +1,13 @@
+lanterne (0.2.0) unstable; urgency=low
+  * Added new "Continuous SOS beacon" function.
+  * Replaced "Torch" window with a simple on/off button.
+  * Modified UI buttons to be more finger-friendly.
+  * Added QSettings support for persistent storage of user parameters.
+  * Modified Strobe timer to strobe first, not pause first.
+  * Various improvements to package meta-data.
+
+ -- John Pietrzak <jpietrzak8@gmail.com>  Tue, 28 May 2013 18:46:40 -0400
+
 lanterne (0.1.1) unstable; urgency=low
   * Tidied up the user interface a bit, along with some of the underlying code.
 

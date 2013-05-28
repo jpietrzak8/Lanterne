@@ -27,63 +27,66 @@
 
 class LanFlashLED;
 class LanAboutForm;
-class LanTorchForm;
 class LanStrobeForm;
 class LanMorseForm;
 class QTimer;
 
 namespace Ui {
-	class MainWindow;
+  class MainWindow;
 }
 
 class MainWindow : public QMainWindow
 {
-	Q_OBJECT
-	public:
-		enum ScreenOrientation {
-			ScreenOrientationLockPortrait,
-			ScreenOrientationLockLandscape,
-			ScreenOrientationAuto
-		};
+  Q_OBJECT
+public:
+  enum ScreenOrientation {
+    ScreenOrientationLockPortrait,
+    ScreenOrientationLockLandscape,
+    ScreenOrientationAuto
+  };
 
-		explicit MainWindow(QWidget *parent = 0);
-		virtual ~MainWindow();
+  explicit MainWindow(
+    QWidget *parent = 0);
 
-		// Note that this will only have an effect on Symbian and Fremantle.
-		void setOrientation(ScreenOrientation orientation);
+  virtual ~MainWindow();
 
-		void showExpanded();
+  // Note that this will only have an effect on Symbian and Fremantle.
+  void setOrientation(ScreenOrientation orientation);
 
-		int getMinTorch();
-		int getMaxTorch();
-		void setTorchBrightness(int arg1);
-		void toggleTorch();
-		void turnTorchOn();
-		void turnTorchOff();
+  void showExpanded();
 
-		int getMinFlash();
-		int getMaxFlash();
-		int getMinTime();
-		int getMaxTime();
-		int getChosenTime();
-		void setFlashBrightness(int arg1);
-		void setFlashDuration(int arg1);
+//  int getMinTorch();
+//  int getMaxTorch();
+//  void setTorchBrightness(int arg1);
+  void toggleTorch();
+  void turnTorchOn();
+  void turnTorchOff();
 
-		private slots:
-			void strobe();
+  int getMinFlash();
+  int getMaxFlash();
+  int getMinTime();
+  int getMaxTime();
+  int getChosenTime();
+  void setFlashBrightness(int arg1);
+  void setFlashDuration(int arg1);
 
-		void on_actionAbout_triggered();
+public slots:
+  void strobe();
 
-		void on_torchButton_clicked();
-		void on_strobeButton_clicked();
-		void on_morseButton_clicked();
+private slots:
+  void on_actionAbout_triggered();
 
-	private:
-		LanFlashLED *led;
-		LanAboutForm *aboutForm;
-		LanTorchForm *torchForm;
+  void on_torchButton_clicked();
+  void on_strobeButton_clicked();
+  void on_morseButton_clicked();
+  void on_sosButton_clicked();
+
+private:
+  LanFlashLED *led;
+  LanAboutForm *aboutForm;
   LanStrobeForm *strobeForm;
   LanMorseForm *morseForm;
+  bool sosRunning;
 
   Ui::MainWindow *ui;
 };

@@ -46,6 +46,9 @@ public:
     MainWindow *mw);
 
   ~LanMorseForm();
+
+  void startSOS();
+  void stopSOS();
   
 private slots:
   void on_morseButton_clicked();
@@ -54,12 +57,24 @@ private slots:
   void threeUnitGap();
   void fourUnitGap();
   void runMorseCode();
+  void runSOSCode();
 
 private:
+  void setupSOSCode();
+
+  // A utility routine:
+  void pushBits(
+    LanBoolList &bits,
+    bool value,
+    unsigned int quantity);
+
   MainWindow *mainWindow;
 
   LanBoolList morseCodeBits;
   LanBoolList::const_iterator morseCodePosition;
+
+  LanBoolList sosCodeBits;
+  LanBoolList::const_iterator sosCodePosition;
 
   QTimer *timer;
 

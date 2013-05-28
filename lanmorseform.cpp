@@ -25,6 +25,7 @@
 
 #include "mainwindow.h"
 #include <QTimer>
+#include <QSettings>
 
 LanMorseForm::LanMorseForm(
   MainWindow *mw)
@@ -37,14 +38,65 @@ LanMorseForm::LanMorseForm(
 
   setAttribute(Qt::WA_Maemo5StackedWindow);
   setWindowFlags(windowFlags() | Qt::Window);
+
+  setupSOSCode();
+
+  QSettings settings("pietrzak.org", "Lanterne");
+
+  ui->dotDurationSpinBox->setMinimum(10);
+  ui->dotDurationSpinBox->setMaximum(1000);
+  ui->dotDurationSpinBox->setValue(100);
+
+  if (settings.contains("CurrentDotDuration"))
+  {
+    int cdd = settings.value("CurrentDotDuration").toInt();
+
+    if ((cdd >= 10) && (cdd <= 1000))
+    {
+      ui->dotDurationSpinBox->setValue(cdd);
+    }
+  }
 }
 
 
 LanMorseForm::~LanMorseForm()
 {
+  QSettings settings("pietrzak.org", "Lanterne");
+
+  settings.setValue(
+    "CurrentDotDuration",
+    ui->dotDurationSpinBox->value());
+
   if (timer) delete timer;
 
   delete ui;
+}
+
+
+void LanMorseForm::startSOS()
+{
+  if (timer)
+  {
+    delete timer;
+    timer = 0;
+  }
+
+  sosCodePosition = sosCodeBits.begin();
+  timer = new QTimer(this);
+  connect (timer, SIGNAL(timeout()), this, SLOT(runSOSCode()));
+  timer->start(ui->dotDurationSpinBox->value());
+}
+
+
+void LanMorseForm::stopSOS()
+{
+  if (timer)
+  {
+    delete timer;
+    timer = 0;
+  }
+
+  mainWindow->turnTorchOff();
 }
 
 
@@ -286,27 +338,20 @@ void LanMorseForm::dot()
 
 void LanMorseForm::dash()
 {
-  morseCodeBits.push_back(true);
-  morseCodeBits.push_back(true);
-  morseCodeBits.push_back(true);
+  pushBits(morseCodeBits, true, 3);
   morseCodeBits.push_back(false);
 }
 
 
 void LanMorseForm::threeUnitGap()
 {
-  morseCodeBits.push_back(false);
-  morseCodeBits.push_back(false);
-  morseCodeBits.push_back(false);
+  pushBits(morseCodeBits, false, 3);
 }
 
 
 void LanMorseForm::fourUnitGap()
 {
-  morseCodeBits.push_back(false);
-  morseCodeBits.push_back(false);
-  morseCodeBits.push_back(false);
-  morseCodeBits.push_back(false);
+  pushBits(morseCodeBits, false, 4);
 }
 
 
@@ -333,4 +378,70 @@ void LanMorseForm::runMorseCode()
   }
 
   ++morseCodePosition;
+}
+
+
+void LanMorseForm::runSOSCode()
+{
+  if (sosCodePosition == sosCodeBits.end())
+  {
+    sosCodePosition = sosCodeBits.begin();
+  }
+
+  if (*sosCodePosition)
+  {
+    mainWindow->turnTorchOn();
+  }
+  else
+  {
+    mainWindow->turnTorchOff();
+  }
+
+  ++sosCodePosition;
+}
+
+
+void LanMorseForm::setupSOSCode()
+{
+  // We'll do the standard SOS, followed by a standard 7-dot word space.
+
+  // S: Three dots, plus char space:
+  sosCodeBits.push_back(true);
+  sosCodeBits.push_back(false);
+  sosCodeBits.push_back(true);
+  sosCodeBits.push_back(false);
+  sosCodeBits.push_back(true);
+  pushBits(sosCodeBits, false, 4);
+
+  // O: Three dashes, plus char space:
+  pushBits(sosCodeBits, true, 3);
+  sosCodeBits.push_back(false);
+  pushBits(sosCodeBits, true, 3);
+  sosCodeBits.push_back(false);
+  pushBits(sosCodeBits, true, 3);
+  pushBits(sosCodeBits, false, 4);
+
+  // S: Three dots, plus word space:
+  sosCodeBits.push_back(true);
+  sosCodeBits.push_back(false);
+  sosCodeBits.push_back(true);
+  sosCodeBits.push_back(false);
+  sosCodeBits.push_back(true);
+  pushBits(sosCodeBits, false, 8);
+}
+
+
+void LanMorseForm::pushBits(
+  LanBoolList &bits,
+  bool value,
+  unsigned int quantity)
+{
+  unsigned int index = 0;
+
+  while (index < quantity)
+  {
+    bits.push_back(value);
+
+    ++index;
+  }
 }

@@ -27,7 +27,6 @@
 
 #include "lanflashled.h"
 #include "lanaboutform.h"
-#include "lantorchform.h"
 #include "lanstrobeform.h"
 #include "lanmorseform.h"
 #include <QTimer>
@@ -37,9 +36,9 @@ MainWindow::MainWindow(
   : QMainWindow(parent),
     led(0),
     aboutForm(0),
-    torchForm(0),
     strobeForm(0),
     morseForm(0),
+    sosRunning(false),
     ui(new Ui::MainWindow)
 {
   ui->setupUi(this);
@@ -51,9 +50,10 @@ MainWindow::MainWindow(
 
 MainWindow::~MainWindow()
 {
+  if (sosRunning) morseForm->stopSOS();
+
   if (led) delete led;
   if (aboutForm) delete aboutForm;
-  if (torchForm) delete torchForm;
   if (strobeForm) delete strobeForm;
   if (morseForm) delete morseForm;
 
@@ -115,6 +115,7 @@ void MainWindow::showExpanded()
 }
 
 
+/*
 int MainWindow::getMinTorch()
 {
   return led->getMinTorch();
@@ -131,6 +132,7 @@ void MainWindow::setTorchBrightness(int arg1)
 {
   led->setTorchBrightness(arg1);
 }
+*/
 
 
 void MainWindow::toggleTorch()
@@ -210,17 +212,24 @@ void MainWindow::on_actionAbout_triggered()
 
 void MainWindow::on_torchButton_clicked()
 {
-  if (!torchForm)
+  if (sosRunning)
   {
-    torchForm = new LanTorchForm(this);
+    morseForm->stopSOS();
+    sosRunning = false;
   }
 
-  torchForm->show();
+  led->toggleTorch();
 }
 
 
 void MainWindow::on_strobeButton_clicked()
 {
+  if (sosRunning)
+  {
+    morseForm->stopSOS();
+    sosRunning = false;
+  }
+
   if (!strobeForm)
   {
     strobeForm = new LanStrobeForm(this);
@@ -236,6 +245,30 @@ void MainWindow::on_morseButton_clicked()
   {
     morseForm = new LanMorseForm(this);
   }
+  else if (sosRunning)
+  {
+    morseForm->stopSOS();
+    sosRunning = false;
+  }
 
   morseForm->show();
+}
+
+void MainWindow::on_sosButton_clicked()
+{
+  if (!morseForm)
+  {
+    morseForm = new LanMorseForm(this);
+  }
+
+  if (!sosRunning)
+  {
+    morseForm->startSOS();
+    sosRunning = true;
+  }
+  else
+  {
+    morseForm->stopSOS();
+    sosRunning = false;
+  }
 }

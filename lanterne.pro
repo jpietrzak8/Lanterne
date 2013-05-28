@@ -29,19 +29,16 @@ SOURCES += main.cpp mainwindow.cpp \
     lanexception.cpp \
     lanaboutform.cpp \
     lanmorseform.cpp \
-    lantorchform.cpp \
     lanstrobeform.cpp
 HEADERS += mainwindow.h \
     lanflashled.h \
     lanexception.h \
     lanaboutform.h \
     lanmorseform.h \
-    lantorchform.h \
     lanstrobeform.h
 FORMS += mainwindow.ui \
     lanaboutform.ui \
     lanmorseform.ui \
-    lantorchform.ui \
     lanstrobeform.ui
 
 # Please do not modify the following two lines. Required for deployment.

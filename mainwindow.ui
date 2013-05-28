@@ -15,6 +15,9 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
+    <property name="margin">
+     <number>8</number>
+    </property>
     <item>
      <widget class="QLabel" name="TitleLabel">
       <property name="sizePolicy">
@@ -32,23 +35,54 @@
      </widget>
     </item>
     <item>
-     <widget class="QPushButton" name="torchButton">
-      <property name="text">
-       <string>Torch</string>
-      </property>
-     </widget>
-    </item>
-    <item>
      <widget class="QPushButton" name="strobeButton">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
       <property name="text">
-       <string>Strobe</string>
+       <string>Flash Strobe Functions</string>
       </property>
      </widget>
     </item>
     <item>
      <widget class="QPushButton" name="morseButton">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
       <property name="text">
        <string>Morse Code</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="sosButton">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="text">
+       <string>SOS</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="torchButton">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="text">
+       <string>Torch On/Off</string>
       </property>
      </widget>
     </item>

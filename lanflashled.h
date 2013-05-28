@@ -36,12 +36,6 @@ public:
 
   ~LanFlashLED();
 
-  int getMinTorch();
-  int getMaxTorch();
-
-  void setTorchBrightness(
-    int brightness);
-
   // Toggle on/off command:
   void toggleTorch();
 
@@ -70,7 +64,6 @@ private:
 
   int minTorch;
   int maxTorch;
-  int chosenTorch;
   bool torchOn;
 
   int minFlash;

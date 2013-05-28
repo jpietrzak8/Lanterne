@@ -25,6 +25,7 @@
 
 #include "mainwindow.h"
 #include <QTimer>
+#include <QSettings>
 
 LanStrobeForm::LanStrobeForm(
   MainWindow *mw)
@@ -42,20 +43,78 @@ LanStrobeForm::LanStrobeForm(
   setWindowFlags(windowFlags() | Qt::Window);
 
   // set up the spin boxes:
+  QSettings settings("pietrzak.org", "Lanterne");
+
   ui->flashBrightnessSpinBox->setMinimum(mainWindow->getMinFlash());
   ui->flashBrightnessSpinBox->setMaximum(mainWindow->getMaxFlash());
-  ui->flashBrightnessSpinBox->setValue(mainWindow->getMinFlash());
+
+  int brightness = mainWindow->getMinFlash();
+
+  if (settings.contains("CurrentFlashIntensity"))
+  {
+    int cfi = settings.value("CurrentFlashIntensity").toInt();
+
+    if ( (cfi >= mainWindow->getMinFlash())
+      && (cfi <= mainWindow->getMaxFlash()))
+    {
+      brightness = cfi;
+    }
+  }
+
+  ui->flashBrightnessSpinBox->setValue(brightness);
+
   ui->flashDurationSpinBox->setMinimum(mainWindow->getMinTime() / 1000);
   ui->flashDurationSpinBox->setMaximum(mainWindow->getMaxTime() / 1000);
-  ui->flashDurationSpinBox->setValue((mainWindow->getMaxTime() / 1000) / 2);
+
+  int duration = (mainWindow->getMaxTime() / 1000) / 2;
+
+  if (settings.contains("CurrentFlashDuration"))
+  {
+    int cfd = settings.value("CurrentFlashDuration").toInt();
+
+    if ( (cfd >= (mainWindow->getMinTime() / 1000))
+      && (cfd <= (mainWindow->getMaxTime() / 1000)))
+    {
+      duration = cfd;
+    }
+  }
+
+  ui->flashDurationSpinBox->setValue(duration);
+
   ui->flashPauseSpinBox->setMinimum(minPause);
   ui->flashPauseSpinBox->setMaximum(maxPause);
+
+  if (settings.contains("CurrentStrobePause"))
+  {
+    int csp = settings.value("CurrentStrobePause").toInt();
+
+    if ( (csp >= minPause)
+      && (csp <= maxPause))
+    {
+      chosenPause = csp;
+    }
+  }
+
   ui->flashPauseSpinBox->setValue(chosenPause);
 }
 
 
 LanStrobeForm::~LanStrobeForm()
 {
+  QSettings settings("pietrzak.org", "Lanterne");
+
+  settings.setValue(
+    "CurrentFlashIntensity",
+    ui->flashBrightnessSpinBox->value());
+
+  settings.setValue(
+    "CurrentFlashDuration",
+    ui->flashDurationSpinBox->value());
+
+  settings.setValue(
+    "CurrentStrobePause",
+    ui->flashPauseSpinBox->value());
+
   if (ledTimer) delete ledTimer;
 
   delete ui;
@@ -93,6 +152,10 @@ void LanStrobeForm::on_strobeFlashButton_pressed()
 {
   if (!ledTimer)
   {
+    // First, kick off with a strobe:
+    mainWindow->strobe();
+
+    // Now, set up a timer to continue strobing:
     ledTimer = new QTimer(this);
     connect(ledTimer, SIGNAL(timeout()), mainWindow, SLOT(strobe()));
 
