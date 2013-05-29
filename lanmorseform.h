@@ -48,21 +48,24 @@ public:
   ~LanMorseForm();
 
   void startSOS();
-  void stopSOS();
+  void stopTimer();
   
 private slots:
   void on_morseButton_clicked();
-  void dot();
-  void dash();
-  void threeUnitGap();
-  void fourUnitGap();
+  void on_pauseButton_clicked();
+  void on_selectTextFileButton_clicked();
+
   void runMorseCode();
   void runSOSCode();
 
 private:
+  void translateTextToBits();
+  void dot();
+  void dash();
+  void threeUnitGap();
+  void fourUnitGap();
   void setupSOSCode();
 
-  // A utility routine:
   void pushBits(
     LanBoolList &bits,
     bool value,
@@ -72,6 +75,8 @@ private:
 
   LanBoolList morseCodeBits;
   LanBoolList::const_iterator morseCodePosition;
+  bool morseRunning;
+  bool morsePaused;
 
   LanBoolList sosCodeBits;
   LanBoolList::const_iterator sosCodePosition;

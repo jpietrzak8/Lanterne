@@ -1,3 +1,11 @@
+lanterne (0.3.0) unstable; urgency=low
+  * Added ability to load text files for use in the morse code flasher.
+  * Added a warning message about the brightness of the flash LEDs.  (Try not to look directly at them!)
+  * Added ability to pause a running morse code transmission.
+  * Added fix for rotation bug.
+
+ -- John Pietrzak <jpietrzak8@gmail.com>  Wed, 29 May 2013 19:10:45 -0400
+
 lanterne (0.2.0) unstable; urgency=low
   * Added new "Continuous SOS beacon" function.
   * Replaced "Torch" window with a simple on/off button.

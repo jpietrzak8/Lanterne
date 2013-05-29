@@ -41,6 +41,9 @@ public:
 
   ~LanStrobeForm();
 
+public slots:
+  void stopStrobe();
+
 private slots:
   void on_flashBrightnessSpinBox_valueChanged(int arg1);
   void on_flashDurationSpinBox_valueChanged(int arg1);

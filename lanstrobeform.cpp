@@ -172,3 +172,13 @@ void LanStrobeForm::on_strobeFlashButton_released()
     ledTimer = 0;
   }
 }
+
+
+void LanStrobeForm::stopStrobe()
+{
+  if (ledTimer)
+  {
+    delete ledTimer;
+    ledTimer = 0;
+  }
+}

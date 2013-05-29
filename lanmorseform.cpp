@@ -26,11 +26,17 @@
 #include "mainwindow.h"
 #include <QTimer>
 #include <QSettings>
+#include <QFileDialog>
+#include <QFile>
+#include <QTextStream>
+#include <QTextDocument>
 
 LanMorseForm::LanMorseForm(
   MainWindow *mw)
   : QWidget(mw),
     mainWindow(mw),
+    morseRunning(false),
+    morsePaused(false),
     timer(0),
     ui(new Ui::LanMorseForm)
 {
@@ -79,6 +85,11 @@ void LanMorseForm::startSOS()
   {
     delete timer;
     timer = 0;
+
+    if (morseRunning)
+    {
+      morsePaused = true;
+    }
   }
 
   sosCodePosition = sosCodeBits.begin();
@@ -88,36 +99,175 @@ void LanMorseForm::startSOS()
 }
 
 
-void LanMorseForm::stopSOS()
+void LanMorseForm::stopTimer()
 {
   if (timer)
   {
     delete timer;
     timer = 0;
-  }
 
-  mainWindow->turnTorchOff();
+    mainWindow->turnTorchOff();
+
+    morseRunning = false;
+    morsePaused = false;
+  }
 }
 
 
 void LanMorseForm::on_morseButton_clicked()
 {
-  morseCodeBits.clear();
-
   if (timer)
   {
     delete timer;
     timer = 0;
   }
 
-  QString morseText = ui->morseLineEdit->text();
+  // Create the morseCodeBits:
+  translateTextToBits();
+
+  // Execute the morseCodeBits:
+  morseCodePosition = morseCodeBits.begin();
+  timer = new QTimer(this);
+  connect (timer, SIGNAL(timeout()), this, SLOT(runMorseCode()));
+  timer->start(ui->dotDurationSpinBox->value());
+
+  // Flag that we are now transmitting morse:
+  morseRunning = true;
+  morsePaused = false;
+}
+
+
+void LanMorseForm::on_pauseButton_clicked()
+{
+  if (morsePaused)
+  {
+    // Stop any running timer:
+    if (timer)
+    {
+      delete timer;
+      timer = 0;
+    }
+
+    // Continue where we left off:
+    timer = new QTimer(this);
+
+    connect(timer, SIGNAL(timeout()), this, SLOT(runMorseCode()));
+    timer->start(ui->dotDurationSpinBox->value());
+
+    morsePaused = false;
+
+    // Nothing more to do here, exit:
+    return;
+  }
+
+  // Is the timer even running?  And, are we currently transmitting?
+  if (!timer || !morseRunning)
+  {
+    // Nothing to be paused:
+    return;
+  }
+
+  // Stop the timer, set the pause flag:
+  delete timer;
+  timer = 0;
+  morsePaused = true;
+
+  // Just in case we're currently "on", turn the light off:
+  mainWindow->turnTorchOff();
+}
+
+
+void LanMorseForm::on_selectTextFileButton_clicked()
+{
+  QString filename = QFileDialog::getOpenFileName(
+    this,
+    tr("Choose Text File"),
+    "/home/user/MyDocs/.documents");
+
+  if (filename.isEmpty())
+  {
+    // Need to create a message of some sort here...
+    return;
+  }
+
+  QFile file(filename);
+
+  if (!file.open(QFile::ReadOnly | QFile::Text))
+  {
+    // Need to create a message of some sort here...
+    return;
+  }
+
+  QTextStream in(&file);
+
+  ui->morsePlainTextEdit->setPlainText(in.readAll());
+}
+
+
+void LanMorseForm::runMorseCode()
+{
+  if (morseCodePosition == morseCodeBits.end())
+  {
+    if (timer)
+    {
+      delete timer;
+      timer = 0;
+    }
+
+    morseRunning = false;
+    morsePaused = false;
+
+    return;
+  }
+
+  if (*morseCodePosition)
+  {
+    mainWindow->turnTorchOn();
+  }
+  else
+  {
+    mainWindow->turnTorchOff();
+  }
+
+  ++morseCodePosition;
+}
+
+
+void LanMorseForm::runSOSCode()
+{
+  if (sosCodePosition == sosCodeBits.end())
+  {
+    sosCodePosition = sosCodeBits.begin();
+  }
+
+  if (*sosCodePosition)
+  {
+    mainWindow->turnTorchOn();
+  }
+  else
+  {
+    mainWindow->turnTorchOff();
+  }
+
+  ++sosCodePosition;
+}
+
+
+//
+// This method will convert the desired text into morse code bits:
+//
+void LanMorseForm::translateTextToBits()
+{
+  morseCodeBits.clear();
+
+  const QTextDocument *morseText = ui->morsePlainTextEdit->document();
 
   int index = 0;
-  int stringSize = morseText.size();
+  int count = morseText->characterCount();
 
-  while (index < stringSize)
+  while (index < count)
   {
-    switch (morseText.at(index).toAscii())
+    switch (morseText->characterAt(index).toAscii())
     {
     case 'a':
     case 'A':
@@ -320,12 +470,6 @@ void LanMorseForm::on_morseButton_clicked()
 
     ++index;
   }
-
-  // Now, execute the morseCodeBits:
-  morseCodePosition = morseCodeBits.begin();
-  timer = new QTimer(this);
-  connect (timer, SIGNAL(timeout()), this, SLOT(runMorseCode()));
-  timer->start(ui->dotDurationSpinBox->value());
 }
 
 
@@ -352,52 +496,6 @@ void LanMorseForm::threeUnitGap()
 void LanMorseForm::fourUnitGap()
 {
   pushBits(morseCodeBits, false, 4);
-}
-
-
-void LanMorseForm::runMorseCode()
-{
-  if (morseCodePosition == morseCodeBits.end())
-  {
-    if (timer)
-    {
-      delete timer;
-      timer = 0;
-    }
-
-    return;
-  }
-
-  if (*morseCodePosition)
-  {
-    mainWindow->turnTorchOn();
-  }
-  else
-  {
-    mainWindow->turnTorchOff();
-  }
-
-  ++morseCodePosition;
-}
-
-
-void LanMorseForm::runSOSCode()
-{
-  if (sosCodePosition == sosCodeBits.end())
-  {
-    sosCodePosition = sosCodeBits.begin();
-  }
-
-  if (*sosCodePosition)
-  {
-    mainWindow->turnTorchOn();
-  }
-  else
-  {
-    mainWindow->turnTorchOff();
-  }
-
-  ++sosCodePosition;
 }
 
 

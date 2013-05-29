@@ -22,7 +22,7 @@ DEPLOYMENTFOLDERS = # file1 dir1
 # CONFIG += mobility
 # MOBILITY +=
 
-QT += Maemo5
+QT += maemo5
 
 SOURCES += main.cpp mainwindow.cpp \
     lanflashled.cpp \

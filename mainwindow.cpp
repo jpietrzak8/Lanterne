@@ -30,6 +30,9 @@
 #include "lanstrobeform.h"
 #include "lanmorseform.h"
 #include <QTimer>
+#include <QDesktopWidget>
+#include <QSettings>
+#include <QMaemo5InformationBox>
 
 MainWindow::MainWindow(
   QWidget *parent)
@@ -46,19 +49,42 @@ MainWindow::MainWindow(
   setAttribute(Qt::WA_Maemo5StackedWindow);
 
   led = new LanFlashLED();
+  strobeForm = new LanStrobeForm(this);
+
+  connect(
+    QApplication::desktop(),
+    SIGNAL(resized(int)),
+    strobeForm,
+    SLOT(stopStrobe()));
+
+  QSettings settings("pietrzak.org", "Lanterne");
+
+  if (!settings.contains("BrightLightWarningSeen"))
+  {
+    QMaemo5InformationBox::information(
+      0,
+      "WARNING: The N900 Flash LEDs are very bright -- avoid looking directly at them when using this app!",
+      0);
+  }
 }
+
 
 MainWindow::~MainWindow()
 {
-  if (sosRunning) morseForm->stopSOS();
+  QSettings settings("pietrzak.org", "Lanterne");
+  if (!settings.contains("BrightLightWarningSeen"))
+  {
+    settings.setValue("BrightLightWarningSeen", true);
+  }
 
-  if (led) delete led;
   if (aboutForm) delete aboutForm;
   if (strobeForm) delete strobeForm;
   if (morseForm) delete morseForm;
+  if (led) delete led;
 
   delete ui;
 }
+
 
 void MainWindow::setOrientation(ScreenOrientation orientation)
 {
@@ -103,6 +129,7 @@ void MainWindow::setOrientation(ScreenOrientation orientation)
     setAttribute(attribute, true);
 }
 
+
 void MainWindow::showExpanded()
 {
 #if defined(Q_OS_SYMBIAN) || defined(Q_WS_SIMULATOR)
@@ -113,26 +140,6 @@ void MainWindow::showExpanded()
     show();
 #endif
 }
-
-
-/*
-int MainWindow::getMinTorch()
-{
-  return led->getMinTorch();
-}
-
-
-int MainWindow::getMaxTorch()
-{
-  return led->getMaxTorch();
-}
-
-
-void MainWindow::setTorchBrightness(int arg1)
-{
-  led->setTorchBrightness(arg1);
-}
-*/
 
 
 void MainWindow::toggleTorch()
@@ -210,12 +217,12 @@ void MainWindow::on_actionAbout_triggered()
   aboutForm->show();
 }
 
+
 void MainWindow::on_torchButton_clicked()
 {
-  if (sosRunning)
+  if (morseForm)
   {
-    morseForm->stopSOS();
-    sosRunning = false;
+    morseForm->stopTimer();
   }
 
   led->toggleTorch();
@@ -224,10 +231,9 @@ void MainWindow::on_torchButton_clicked()
 
 void MainWindow::on_strobeButton_clicked()
 {
-  if (sosRunning)
+  if (morseForm)
   {
-    morseForm->stopSOS();
-    sosRunning = false;
+    morseForm->stopTimer();
   }
 
   if (!strobeForm)
@@ -245,14 +251,14 @@ void MainWindow::on_morseButton_clicked()
   {
     morseForm = new LanMorseForm(this);
   }
-  else if (sosRunning)
+  else
   {
-    morseForm->stopSOS();
-    sosRunning = false;
+    morseForm->stopTimer();
   }
 
   morseForm->show();
 }
+
 
 void MainWindow::on_sosButton_clicked()
 {
@@ -268,7 +274,8 @@ void MainWindow::on_sosButton_clicked()
   }
   else
   {
-    morseForm->stopSOS();
+    morseForm->stopTimer();
     sosRunning = false;
   }
 }
+
