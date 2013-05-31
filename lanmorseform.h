@@ -48,15 +48,18 @@ public:
   ~LanMorseForm();
 
   void startSOS();
+  void startE();
   void stopTimer();
   
 private slots:
   void on_morseButton_clicked();
   void on_pauseButton_clicked();
   void on_selectTextFileButton_clicked();
+  void on_repeatCheckBox_toggled(bool checked);
 
   void runMorseCode();
   void runSOSCode();
+  void runECode();
 
 private:
   void translateTextToBits();
@@ -65,6 +68,7 @@ private:
   void threeUnitGap();
   void fourUnitGap();
   void setupSOSCode();
+  void setupECode();
 
   void pushBits(
     LanBoolList &bits,
@@ -77,9 +81,13 @@ private:
   LanBoolList::const_iterator morseCodePosition;
   bool morseRunning;
   bool morsePaused;
+  bool runMorseContinuously;
 
   LanBoolList sosCodeBits;
   LanBoolList::const_iterator sosCodePosition;
+
+  LanBoolList eCodeBits;
+  LanBoolList::const_iterator eCodePosition;
 
   QTimer *timer;
 

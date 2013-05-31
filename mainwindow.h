@@ -25,10 +25,13 @@
 
 #include <QtGui/QMainWindow>
 
+#include "landbus.h"
+
 class LanFlashLED;
 class LanAboutForm;
 class LanStrobeForm;
 class LanMorseForm;
+class LanPreferencesForm;
 class QTimer;
 
 namespace Ui {
@@ -70,23 +73,36 @@ public:
   void setFlashBrightness(int arg1);
   void setFlashDuration(int arg1);
 
+  void setIgnoreCameraCover(
+    bool ignore);
+
 public slots:
   void strobe();
 
+  void updateCameraCover(
+    bool closed);
+
 private slots:
+  void on_actionPreferences_triggered();
   void on_actionAbout_triggered();
 
   void on_torchButton_clicked();
   void on_strobeButton_clicked();
   void on_morseButton_clicked();
   void on_sosButton_clicked();
+  void on_torchContinuousButton_clicked();
 
 private:
   LanFlashLED *led;
   LanAboutForm *aboutForm;
   LanStrobeForm *strobeForm;
   LanMorseForm *morseForm;
-  bool sosRunning;
+  LanPreferencesForm *preferencesForm;
+  bool loopRunning;
+
+  LanDBus dbus;
+  bool cameraCoverClosed;
+  bool ignoreCameraCover;
 
   Ui::MainWindow *ui;
 };

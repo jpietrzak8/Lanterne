@@ -1,3 +1,10 @@
+lanterne (0.4.0) unstable; urgency=low
+  * Added check for camera cover status; Lanterne will now avoid turning LEDs on if cover is closed.  This check can be disabled from the new Preferences form (available from the drop-down menu).
+  * Added ability to transmit Morse code text in a continuous loop.
+  * Added option to run torch in a continuous pulse.
+
+ -- John Pietrzak <jpietrzak8@gmail.com>  Thu, 30 May 2013 19:57:31 -0400
+
 lanterne (0.3.0) unstable; urgency=low
   * Added ability to load text files for use in the morse code flasher.
   * Added a warning message about the brightness of the flash LEDs.  (Try not to look directly at them!)

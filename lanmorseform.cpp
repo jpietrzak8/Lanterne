@@ -31,6 +31,7 @@
 #include <QTextStream>
 #include <QTextDocument>
 
+
 LanMorseForm::LanMorseForm(
   MainWindow *mw)
   : QWidget(mw),
@@ -46,12 +47,13 @@ LanMorseForm::LanMorseForm(
   setWindowFlags(windowFlags() | Qt::Window);
 
   setupSOSCode();
-
-  QSettings settings("pietrzak.org", "Lanterne");
+  setupECode();
 
   ui->dotDurationSpinBox->setMinimum(10);
   ui->dotDurationSpinBox->setMaximum(1000);
   ui->dotDurationSpinBox->setValue(100);
+
+  QSettings settings("pietrzak.org", "Lanterne");
 
   if (settings.contains("CurrentDotDuration"))
   {
@@ -61,6 +63,13 @@ LanMorseForm::LanMorseForm(
     {
       ui->dotDurationSpinBox->setValue(cdd);
     }
+  }
+
+  if (settings.contains("RunMorseContinuously"))
+  {
+    bool rmc = settings.value("RunMorseContinuously").toBool();
+
+    ui->repeatCheckBox->setChecked(rmc);
   }
 }
 
@@ -72,6 +81,10 @@ LanMorseForm::~LanMorseForm()
   settings.setValue(
     "CurrentDotDuration",
     ui->dotDurationSpinBox->value());
+
+  settings.setValue(
+    "RunMorseContinuously",
+    ui->repeatCheckBox->isChecked());
 
   if (timer) delete timer;
 
@@ -95,6 +108,26 @@ void LanMorseForm::startSOS()
   sosCodePosition = sosCodeBits.begin();
   timer = new QTimer(this);
   connect (timer, SIGNAL(timeout()), this, SLOT(runSOSCode()));
+  timer->start(ui->dotDurationSpinBox->value());
+}
+
+
+void LanMorseForm::startE()
+{
+  if (timer)
+  {
+    delete timer;
+    timer = 0;
+
+    if (morseRunning)
+    {
+      morsePaused = true;
+    }
+  }
+
+  eCodePosition = eCodeBits.begin();
+  timer = new QTimer(this);
+  connect (timer, SIGNAL(timeout()), this, SLOT(runECode()));
   timer->start(ui->dotDurationSpinBox->value());
 }
 
@@ -204,20 +237,33 @@ void LanMorseForm::on_selectTextFileButton_clicked()
 }
 
 
+void LanMorseForm::on_repeatCheckBox_toggled(bool checked)
+{
+  runMorseContinuously = checked;
+}
+
+
 void LanMorseForm::runMorseCode()
 {
   if (morseCodePosition == morseCodeBits.end())
   {
-    if (timer)
+    if (runMorseContinuously)
     {
-      delete timer;
-      timer = 0;
+      morseCodePosition = morseCodeBits.begin();
     }
+    else
+    {
+      if (timer)
+      {
+        delete timer;
+        timer = 0;
+      }
 
-    morseRunning = false;
-    morsePaused = false;
+      morseRunning = false;
+      morsePaused = false;
 
-    return;
+      return;
+    }
   }
 
   if (*morseCodePosition)
@@ -250,6 +296,26 @@ void LanMorseForm::runSOSCode()
   }
 
   ++sosCodePosition;
+}
+
+
+void LanMorseForm::runECode()
+{
+  if (eCodePosition == eCodeBits.end())
+  {
+    eCodePosition = eCodeBits.begin();
+  }
+
+  if (*eCodePosition)
+  {
+    mainWindow->turnTorchOn();
+  }
+  else
+  {
+    mainWindow->turnTorchOff();
+  }
+
+  ++eCodePosition;
 }
 
 
@@ -526,6 +592,14 @@ void LanMorseForm::setupSOSCode()
   sosCodeBits.push_back(false);
   sosCodeBits.push_back(true);
   pushBits(sosCodeBits, false, 8);
+}
+
+
+void LanMorseForm::setupECode()
+{
+  // We'll do an "E" (single dot), followed by 7-dot word space:
+  eCodeBits.push_back(true);
+  pushBits(eCodeBits, false, 8);
 }
 
 

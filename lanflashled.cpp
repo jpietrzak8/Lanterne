@@ -20,6 +20,19 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 //
 
+//
+// Note: I've finally discovered some data on the N900's Flash LEDs.
+// There's a Maemo.org page:
+//
+// http://wiki.maemo.org/N900_Hardware_Flash_Torch
+//
+// And from there, you can get to the data sheet for the ADP1653 device.
+//
+// If I'm reading it right, the V4L2 intensity settings imply that the
+// torch is running at 50 mA (setting 1), while the flash runs from
+// 215 mA (setting 12) to 320 mA (setting 19).
+//
+
 #include "lanflashled.h"
 
 #include <sys/ioctl.h>

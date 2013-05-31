@@ -29,6 +29,7 @@
 #include "lanaboutform.h"
 #include "lanstrobeform.h"
 #include "lanmorseform.h"
+#include "lanpreferencesform.h"
 #include <QTimer>
 #include <QDesktopWidget>
 #include <QSettings>
@@ -41,7 +42,9 @@ MainWindow::MainWindow(
     aboutForm(0),
     strobeForm(0),
     morseForm(0),
-    sosRunning(false),
+    loopRunning(false),
+    cameraCoverClosed(true),
+    ignoreCameraCover(false),
     ui(new Ui::MainWindow)
 {
   ui->setupUi(this);
@@ -49,8 +52,22 @@ MainWindow::MainWindow(
   setAttribute(Qt::WA_Maemo5StackedWindow);
 
   led = new LanFlashLED();
-  strobeForm = new LanStrobeForm(this);
 
+  // Set up the user preferences (along with the window):
+  preferencesForm = new LanPreferencesForm(this);
+
+  // Set up DBus camera cover monitoring:
+  connect(
+    &dbus,
+    SIGNAL(cameraCoverChanged(bool)),
+    this,
+    SLOT(updateCameraCover(bool)));
+
+  // Initialize the current camera cover status:
+  dbus.checkCameraCoverStatus();
+
+  // Attempt to fix a problem with buttons not working during rotation:
+  strobeForm = new LanStrobeForm(this);
   connect(
     QApplication::desktop(),
     SIGNAL(resized(int)),
@@ -63,7 +80,7 @@ MainWindow::MainWindow(
   {
     QMaemo5InformationBox::information(
       0,
-      "WARNING: The N900 Flash LEDs are very bright -- avoid looking directly at them when using this app!",
+      "WARNING: The N900 Flash LEDs are very bright -- avoid looking directly at them!",
       0);
   }
 }
@@ -144,12 +161,18 @@ void MainWindow::showExpanded()
 
 void MainWindow::toggleTorch()
 {
+  // Do nothing if camera cover is closed:
+  if (cameraCoverClosed && !ignoreCameraCover) return;
+
   led->toggleTorch();
 }
 
 
 void MainWindow::turnTorchOn()
 {
+  // Do nothing if camera cover is closed:
+  if (cameraCoverClosed && !ignoreCameraCover) return;
+
   led->turnTorchOn();
 }
 
@@ -201,9 +224,43 @@ void MainWindow::setFlashDuration(int arg1)
 }
 
 
+void MainWindow::setIgnoreCameraCover(
+  bool ignore)
+{
+  ignoreCameraCover = ignore;
+}
+
+
 void MainWindow::strobe()
 {
+  // Do nothing if camera cover is closed:
+  if (cameraCoverClosed && !ignoreCameraCover) return;
+
   led->strobe();
+}
+
+
+void MainWindow::updateCameraCover(
+  bool closed)
+{
+  cameraCoverClosed = closed;
+
+  // If the cover is closed, make sure all LED operations are shut down:
+  if (cameraCoverClosed && !ignoreCameraCover)
+  {
+    if (morseForm)
+    {
+      morseForm->stopTimer();
+    }
+
+    led->turnTorchOff();
+  }
+}
+
+
+void MainWindow::on_actionPreferences_triggered()
+{
+  preferencesForm->show();
 }
 
 
@@ -220,9 +277,13 @@ void MainWindow::on_actionAbout_triggered()
 
 void MainWindow::on_torchButton_clicked()
 {
+  // Do nothing if the camera cover is closed:
+  if (cameraCoverClosed && !ignoreCameraCover) return;
+
   if (morseForm)
   {
     morseForm->stopTimer();
+    loopRunning = false;
   }
 
   led->toggleTorch();
@@ -234,6 +295,7 @@ void MainWindow::on_strobeButton_clicked()
   if (morseForm)
   {
     morseForm->stopTimer();
+    loopRunning = false;
   }
 
   if (!strobeForm)
@@ -254,6 +316,7 @@ void MainWindow::on_morseButton_clicked()
   else
   {
     morseForm->stopTimer();
+    loopRunning = false;
   }
 
   morseForm->show();
@@ -262,20 +325,43 @@ void MainWindow::on_morseButton_clicked()
 
 void MainWindow::on_sosButton_clicked()
 {
+  // Do nothing if the camera cover is closed:
+  if (cameraCoverClosed && !ignoreCameraCover) return;
+
   if (!morseForm)
   {
     morseForm = new LanMorseForm(this);
   }
 
-  if (!sosRunning)
+  if (!loopRunning)
   {
     morseForm->startSOS();
-    sosRunning = true;
+    loopRunning = true;
   }
   else
   {
     morseForm->stopTimer();
-    sosRunning = false;
+    loopRunning = false;
   }
 }
 
+void MainWindow::on_torchContinuousButton_clicked()
+{
+  if (cameraCoverClosed && !ignoreCameraCover) return;
+
+  if (!morseForm)
+  {
+    morseForm = new LanMorseForm(this);
+  }
+
+  if (!loopRunning)
+  {
+    morseForm->startE();
+    loopRunning = true;
+  }
+  else
+  {
+    morseForm->stopTimer();
+    loopRunning = false;
+  }
+}

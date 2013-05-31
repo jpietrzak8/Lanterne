@@ -22,24 +22,32 @@ DEPLOYMENTFOLDERS = # file1 dir1
 # CONFIG += mobility
 # MOBILITY +=
 
-QT += maemo5
+QT += maemo5 dbus
 
 SOURCES += main.cpp mainwindow.cpp \
     lanflashled.cpp \
     lanexception.cpp \
     lanaboutform.cpp \
     lanmorseform.cpp \
-    lanstrobeform.cpp
+    lanstrobeform.cpp \
+    lanaudioinputform.cpp \
+    landbus.cpp \
+    lanpreferencesform.cpp
 HEADERS += mainwindow.h \
     lanflashled.h \
     lanexception.h \
     lanaboutform.h \
     lanmorseform.h \
-    lanstrobeform.h
+    lanstrobeform.h \
+    lanaudioinputform.h \
+    landbus.h \
+    lanpreferencesform.h
 FORMS += mainwindow.ui \
     lanaboutform.ui \
     lanmorseform.ui \
-    lanstrobeform.ui
+    lanstrobeform.ui \
+    lanaudioinputform.ui \
+    lanpreferencesform.ui
 
 # Please do not modify the following two lines. Required for deployment.
 include(deployment.pri)
