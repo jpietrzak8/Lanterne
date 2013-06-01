@@ -7,34 +7,94 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>300</height>
+    <height>400</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>Preferences</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
+  <layout class="QVBoxLayout" name="verticalLayout_2">
+   <property name="margin">
+    <number>0</number>
+   </property>
    <item>
-    <widget class="QCheckBox" name="disableCoverCheckBox">
-     <property name="text">
-      <string>Ignore Camera Cover Status</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QLabel" name="warningLabel">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Warning: using LEDs with cover closed might damage camera</string>
-     </property>
-     <property name="wordWrap">
+    <widget class="QScrollArea" name="scrollArea">
+     <property name="widgetResizable">
       <bool>true</bool>
      </property>
+     <widget class="QWidget" name="scrollAreaWidgetContents">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>398</width>
+        <height>398</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QCheckBox" name="morseKeyCheckBox">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>Use Torch Button as Morse Key</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="disableCoverCheckBox">
+         <property name="text">
+          <string>Ignore Camera Cover Status</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="warningLabel">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Warning: using LEDs with cover closed might damage camera</string>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="indicatorLEDCheckBox">
+         <property name="text">
+          <string>Use Indicator LED as Torch</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <widget class="QLabel" name="indicatorBrightnessLabel">
+           <property name="text">
+            <string>Choose Indicator LED Brightness</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="indicatorBrightnessComboBox"/>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="cameraButtonCheckBox">
+         <property name="text">
+          <string>Use Camera Button to toggle Torch</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
   </layout>

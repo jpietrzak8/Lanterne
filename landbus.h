@@ -54,13 +54,21 @@ signals:
   void cameraCoverChanged(
     bool coverClosed);
 
+  void cameraButtonChanged(
+    bool buttonPressed);
+
 public slots:
   void cameraCoverPropertyModified(
     int count,
     QList<DBusProperty> properties);
 
+  void cameraLaunchPropertyModified(
+    int count,
+    QList<DBusProperty> properties);
+
 private:
   QDBusInterface *halCameraShutter;
+  QDBusInterface *halCameraButtonLaunch;
 };
 
 #endif // LANDBUS_H

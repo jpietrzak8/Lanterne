@@ -45,13 +45,17 @@ public slots:
   void stopStrobe();
 
 private slots:
-  void on_flashBrightnessSpinBox_valueChanged(int arg1);
+  void on_flashBrightnessComboBox_currentIndexChanged(int index);
   void on_flashDurationSpinBox_valueChanged(int arg1);
   void on_flashPauseSpinBox_valueChanged(int arg1);
   void on_strobeFlashButton_pressed();
   void on_strobeFlashButton_released();
-  
+
 private:
+  void setupBrightnessComboBox();
+  void setBrightnessLevel(
+    int brightness);
+
   MainWindow *mainWindow;
 
   int minPause;

@@ -42,9 +42,21 @@ public:
   ~LanPreferencesForm();
   
 private slots:
+  void on_morseKeyCheckBox_toggled(bool checked);
   void on_disableCoverCheckBox_toggled(bool checked);
+  void on_indicatorLEDCheckBox_toggled(bool checked);
+  void on_indicatorBrightnessComboBox_currentIndexChanged(int index);
+//  void on_disableCameraCheckBox_toggled(bool checked);
+  void on_cameraButtonCheckBox_toggled(bool checked);
 
 private:
+/*
+  void disableCameraApp();
+  void enableCameraApp();
+
+  bool cameraDisabled;
+*/
+
   MainWindow *mainWindow;
 
   Ui::LanPreferencesForm *ui;

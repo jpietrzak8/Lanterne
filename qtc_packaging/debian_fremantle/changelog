@@ -1,3 +1,11 @@
+lanterne (0.5.0) unstable; urgency=low
+  * Added support for indicator LED.  On the preferences panel, the user can select to use the indicator LED for the torch, as well as select between seven levels of brightness for it.
+  * The Torch On/Off button can now be used as a Morse Key (torch stays on for as long as you keep the button pressed).  This behavior can be controlled on the preferences panel.
+  * Added the ability to use the camera button to control the torch.  (This is off by default, needs to be selected by the user on the preferences panel.)
+  * Changed brightness level control on Strobe window to combo box, with more information about the actual brightness being chosen.
+
+ -- John Pietrzak <jpietrzak8@gmail.com>  Fri, 31 May 2013 21:14:51 -0400
+
 lanterne (0.4.0) unstable; urgency=low
   * Added check for camera cover status; Lanterne will now avoid turning LEDs on if cover is closed.  This check can be disabled from the new Preferences form (available from the drop-down menu).
   * Added ability to transmit Morse code text in a continuous loop.

@@ -47,6 +47,8 @@
 // The Flash LEDs are tied into video device 0, along with the camera itself:
 #define PATH_TO_FLASH_DEVICE "/dev/video0"
 
+#include <iostream>
+
 LanFlashLED::LanFlashLED()
   : fileDescriptor(-1),
     minTorch(0),
@@ -57,7 +59,11 @@ LanFlashLED::LanFlashLED()
     chosenFlash(12),
     minTime(3000),
     maxTime(10000),
-    chosenTime(0)
+    chosenTime(0),
+    minIndicator(0),
+    maxIndicator(7),
+    chosenIndicator(7),
+    indicatorOn(false)
 {
   openFlashDevice();
 }
@@ -243,6 +249,69 @@ void LanFlashLED::strobe()
 }
 
 
+void LanFlashLED::toggleIndicator()
+{
+  struct v4l2_control ctrl;
+
+  // Sanity check:
+  if (fileDescriptor == -1)
+  {
+    return;
+  }
+
+  ctrl.id = V4L2_CID_INDICATOR_INTENSITY;
+
+  if (indicatorOn)
+  {
+    ctrl.value = minIndicator;
+    indicatorOn = false;
+  }
+  else
+  {
+    ctrl.value = chosenIndicator;
+    indicatorOn = true;
+  }
+
+  if (ioctl(fileDescriptor, VIDIOC_S_CTRL, &ctrl) == -1)
+  {
+    std::stringstream ss;
+    ss << "Failed to set indicator intensity to " << ctrl.value << "\n";
+    ss << "Error is " << strerror(errno) << "\n";
+    throw LanException(ss.str());
+  }
+}
+
+
+void LanFlashLED::turnIndicatorOn()
+{
+  if (!indicatorOn) toggleIndicator();
+}
+
+
+void LanFlashLED::turnIndicatorOff()
+{
+  if (indicatorOn) toggleIndicator();
+}
+
+
+void LanFlashLED::setIndicatorBrightnessLevel(
+  int brightness)
+{
+  if (brightness < minIndicator)
+  {
+    chosenIndicator = minIndicator;
+  }
+  else if (brightness > maxIndicator)
+  {
+    chosenIndicator = maxIndicator;
+  }
+  else
+  {
+    chosenIndicator = brightness;
+  }
+}
+
+
 void LanFlashLED::openFlashDevice()
 {
   // Not sure why "O_RDWR", but it seems to be necessary:
@@ -303,4 +372,19 @@ void LanFlashLED::openFlashDevice()
 
   minTorch = qctrl.minimum;
   maxTorch = qctrl.maximum;
+
+  // Does this pick up the indicator LED?
+  qctrl.id = V4L2_CID_INDICATOR_INTENSITY;
+
+  if (ioctl(fileDescriptor, VIDIOC_QUERYCTRL, &qctrl) == -1)
+  {
+    std::stringstream ss;
+    ss << "Failed to retrieve indicator LED intensity values.\n";
+    ss << "Error is " << strerror(errno) << "\n";
+    throw LanException(ss.str());
+  }
+
+  minIndicator = qctrl.minimum;
+  maxIndicator = qctrl.maximum;
+  chosenIndicator = qctrl.maximum;
 }

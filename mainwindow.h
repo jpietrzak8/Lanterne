@@ -73,8 +73,20 @@ public:
   void setFlashBrightness(int arg1);
   void setFlashDuration(int arg1);
 
+  void setUseTorchButtonAsMorseKey(
+    bool useTBAMK);
+
   void setIgnoreCameraCover(
     bool ignore);
+
+  void setUseCameraButton(
+    bool useCB);
+
+  void useIndicatorLED(
+    bool useILED);
+
+  void setIndicatorBrightnessLevel(
+    int brightness);
 
 public slots:
   void strobe();
@@ -82,11 +94,16 @@ public slots:
   void updateCameraCover(
     bool closed);
 
+  void updateCameraButton(
+    bool pressed);
+
 private slots:
   void on_actionPreferences_triggered();
   void on_actionAbout_triggered();
 
   void on_torchButton_clicked();
+  void on_torchButton_pressed();
+  void on_torchButton_released();
   void on_strobeButton_clicked();
   void on_morseButton_clicked();
   void on_sosButton_clicked();
@@ -100,9 +117,15 @@ private:
   LanPreferencesForm *preferencesForm;
   bool loopRunning;
 
+  bool useTorchButtonAsMorseKey;
+
   LanDBus dbus;
   bool cameraCoverClosed;
   bool ignoreCameraCover;
+
+  bool useIndicatorLEDAsTorch;
+
+  bool useCameraButton;
 
   Ui::MainWindow *ui;
 };

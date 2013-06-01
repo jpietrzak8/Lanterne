@@ -27,6 +27,8 @@
 #include <QTimer>
 #include <QSettings>
 
+#include <iostream>
+
 LanStrobeForm::LanStrobeForm(
   MainWindow *mw)
   : QWidget(mw),
@@ -42,27 +44,17 @@ LanStrobeForm::LanStrobeForm(
   setAttribute(Qt::WA_Maemo5StackedWindow);
   setWindowFlags(windowFlags() | Qt::Window);
 
-  // set up the spin boxes:
   QSettings settings("pietrzak.org", "Lanterne");
 
-  ui->flashBrightnessSpinBox->setMinimum(mainWindow->getMinFlash());
-  ui->flashBrightnessSpinBox->setMaximum(mainWindow->getMaxFlash());
+  // Set up the brightness combo box:
+  setupBrightnessComboBox();
 
-  int brightness = mainWindow->getMinFlash();
-
-  if (settings.contains("CurrentFlashIntensity"))
+  if (settings.contains("CurrentFlashBrightness"))
   {
-    int cfi = settings.value("CurrentFlashIntensity").toInt();
-
-    if ( (cfi >= mainWindow->getMinFlash())
-      && (cfi <= mainWindow->getMaxFlash()))
-    {
-      brightness = cfi;
-    }
+    setBrightnessLevel(settings.value("CurrentFlashBrightness").toInt());
   }
 
-  ui->flashBrightnessSpinBox->setValue(brightness);
-
+  // set up the spin boxes:
   ui->flashDurationSpinBox->setMinimum(mainWindow->getMinTime() / 1000);
   ui->flashDurationSpinBox->setMaximum(mainWindow->getMaxTime() / 1000);
 
@@ -104,8 +96,8 @@ LanStrobeForm::~LanStrobeForm()
   QSettings settings("pietrzak.org", "Lanterne");
 
   settings.setValue(
-    "CurrentFlashIntensity",
-    ui->flashBrightnessSpinBox->value());
+    "CurrentFlashBrightness",
+    ui->flashBrightnessComboBox->currentIndex());
 
   settings.setValue(
     "CurrentFlashDuration",
@@ -121,15 +113,17 @@ LanStrobeForm::~LanStrobeForm()
 }
 
 
-void LanStrobeForm::on_flashBrightnessSpinBox_valueChanged(int arg1)
+void LanStrobeForm::on_flashBrightnessComboBox_currentIndexChanged(int index)
 {
-  mainWindow->setFlashBrightness(arg1);
+  mainWindow->setFlashBrightness(index + 12);
 }
+
 
 void LanStrobeForm::on_flashDurationSpinBox_valueChanged(int arg1)
 {
   mainWindow->setFlashDuration(arg1 * 1000);
 }
+
 
 void LanStrobeForm::on_flashPauseSpinBox_valueChanged(int arg1)
 {
@@ -180,5 +174,36 @@ void LanStrobeForm::stopStrobe()
   {
     delete ledTimer;
     ledTimer = 0;
+  }
+}
+
+
+void LanStrobeForm::setupBrightnessComboBox()
+{
+  ui->flashBrightnessComboBox->addItem("12 (215 mA)");
+  ui->flashBrightnessComboBox->addItem("13 (230 mA)");
+  ui->flashBrightnessComboBox->addItem("14 (245 mA)");
+  ui->flashBrightnessComboBox->addItem("15 (260 mA)");
+  ui->flashBrightnessComboBox->addItem("16 (275 mA)");
+  ui->flashBrightnessComboBox->addItem("17 (290 mA)");
+  ui->flashBrightnessComboBox->addItem("18 (305 mA)");
+  ui->flashBrightnessComboBox->addItem("19 (320 mA)");
+}
+
+
+void LanStrobeForm::setBrightnessLevel(
+  int brightness)
+{
+  int adjustedB = brightness + 12;
+
+  if ( (adjustedB >= mainWindow->getMinFlash())
+    && (adjustedB <= mainWindow->getMaxFlash()))
+  {
+    ui->flashBrightnessComboBox->setCurrentIndex(brightness);
+  }
+  else
+  {
+    ui->flashBrightnessComboBox->setCurrentIndex(
+      mainWindow->getMinFlash() - 12);
   }
 }

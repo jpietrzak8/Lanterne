@@ -75,7 +75,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QSpinBox" name="flashBrightnessSpinBox"/>
+      <widget class="QComboBox" name="flashBrightnessComboBox"/>
      </item>
     </layout>
    </item>

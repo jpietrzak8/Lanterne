@@ -35,6 +35,8 @@
 #include <QSettings>
 #include <QMaemo5InformationBox>
 
+//#include <iostream>
+
 MainWindow::MainWindow(
   QWidget *parent)
   : QMainWindow(parent),
@@ -42,9 +44,13 @@ MainWindow::MainWindow(
     aboutForm(0),
     strobeForm(0),
     morseForm(0),
+    preferencesForm(0),
     loopRunning(false),
+    useTorchButtonAsMorseKey(false),
     cameraCoverClosed(true),
     ignoreCameraCover(false),
+    useIndicatorLEDAsTorch(false),
+    useCameraButton(false),
     ui(new Ui::MainWindow)
 {
   ui->setupUi(this);
@@ -65,6 +71,13 @@ MainWindow::MainWindow(
 
   // Initialize the current camera cover status:
   dbus.checkCameraCoverStatus();
+
+  // Set up DBus camera button monitoring:
+  connect(
+    &dbus,
+    SIGNAL(cameraButtonChanged(bool)),
+    this,
+    SLOT(updateCameraButton(bool)));
 
   // Attempt to fix a problem with buttons not working during rotation:
   strobeForm = new LanStrobeForm(this);
@@ -97,6 +110,8 @@ MainWindow::~MainWindow()
   if (aboutForm) delete aboutForm;
   if (strobeForm) delete strobeForm;
   if (morseForm) delete morseForm;
+  if (preferencesForm) delete preferencesForm;
+
   if (led) delete led;
 
   delete ui;
@@ -164,7 +179,14 @@ void MainWindow::toggleTorch()
   // Do nothing if camera cover is closed:
   if (cameraCoverClosed && !ignoreCameraCover) return;
 
-  led->toggleTorch();
+  if (useIndicatorLEDAsTorch)
+  {
+    led->toggleIndicator();
+  }
+  else
+  {
+    led->toggleTorch();
+  }
 }
 
 
@@ -173,12 +195,20 @@ void MainWindow::turnTorchOn()
   // Do nothing if camera cover is closed:
   if (cameraCoverClosed && !ignoreCameraCover) return;
 
-  led->turnTorchOn();
+  if (useIndicatorLEDAsTorch)
+  {
+    led->turnIndicatorOn();
+  }
+  else
+  {
+    led->turnTorchOn();
+  }
 }
 
 
 void MainWindow::turnTorchOff()
 {
+  led->turnIndicatorOff();
   led->turnTorchOff();
 }
 
@@ -218,9 +248,17 @@ void MainWindow::setFlashBrightness(int arg1)
   led->setFlashBrightness(arg1);
 }
 
+
 void MainWindow::setFlashDuration(int arg1)
 {
   led->setFlashDuration(arg1);
+}
+
+
+void MainWindow::setUseTorchButtonAsMorseKey(
+  bool useTBAMK)
+{
+  useTorchButtonAsMorseKey = useTBAMK;
 }
 
 
@@ -228,6 +266,31 @@ void MainWindow::setIgnoreCameraCover(
   bool ignore)
 {
   ignoreCameraCover = ignore;
+}
+
+
+void MainWindow::setUseCameraButton(
+  bool useCB)
+{
+  useCameraButton = useCB;
+}
+
+
+void MainWindow::useIndicatorLED(
+  bool useILED)
+{
+  useIndicatorLEDAsTorch = useILED;
+
+  // Turn off the torch in either case:
+  turnTorchOff();
+}
+
+
+void MainWindow::setIndicatorBrightnessLevel(
+  int brightness)
+{
+//std::cout << "setting indicator brightness level to " << brightness << std::endl;
+  led->setIndicatorBrightnessLevel(brightness);
 }
 
 
@@ -253,7 +316,34 @@ void MainWindow::updateCameraCover(
       morseForm->stopTimer();
     }
 
-    led->turnTorchOff();
+    turnTorchOff();
+  }
+}
+
+
+void MainWindow::updateCameraButton(
+  bool pressed)
+{
+  if (useCameraButton)
+  {
+    if (useTorchButtonAsMorseKey)
+    {
+      if (pressed)
+      {
+        toggleTorch();
+      }
+    }
+    else
+    {
+      if (pressed)
+      {
+        turnTorchOn();
+      }
+      else
+      {
+        turnTorchOff();
+      }
+    }
   }
 }
 
@@ -277,7 +367,10 @@ void MainWindow::on_actionAbout_triggered()
 
 void MainWindow::on_torchButton_clicked()
 {
-  // Do nothing if the camera cover is closed:
+  // Skip this method if we are in Morse Key mode:
+  if (useTorchButtonAsMorseKey) return;
+
+  // Also, do nothing if the camera cover is closed:
   if (cameraCoverClosed && !ignoreCameraCover) return;
 
   if (morseForm)
@@ -286,7 +379,43 @@ void MainWindow::on_torchButton_clicked()
     loopRunning = false;
   }
 
-  led->toggleTorch();
+  toggleTorch();
+}
+
+
+void MainWindow::on_torchButton_pressed()
+{
+  // Skip this method if we are not in Morse Key mode:
+  if (!useTorchButtonAsMorseKey) return;
+
+  // Also, do nothing if the camera cover is closed:
+  if (cameraCoverClosed && !ignoreCameraCover) return;
+
+  if (morseForm)
+  {
+    morseForm->stopTimer();
+    loopRunning = false;
+  }
+
+  turnTorchOn();
+}
+
+
+void MainWindow::on_torchButton_released()
+{
+  // Skip this method if we are not in Morse Key mode:
+  if (!useTorchButtonAsMorseKey) return;
+
+  // Also, do nothing if the camera cover is closed:
+  if (cameraCoverClosed && !ignoreCameraCover) return;
+
+  if (morseForm)
+  {
+    morseForm->stopTimer();
+    loopRunning = false;
+  }
+
+  turnTorchOff();
 }
 
 
@@ -344,6 +473,7 @@ void MainWindow::on_sosButton_clicked()
     loopRunning = false;
   }
 }
+
 
 void MainWindow::on_torchContinuousButton_clicked()
 {

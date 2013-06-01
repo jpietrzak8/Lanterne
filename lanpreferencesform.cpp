@@ -25,10 +25,14 @@
 
 #include "mainwindow.h"
 #include <QSettings>
+#include <QProcess>
+
+//#include <iostream>
 
 LanPreferencesForm::LanPreferencesForm(
   MainWindow *mw)
   : QWidget(mw),
+//    cameraDisabled(false),
     mainWindow(mw),
     ui(new Ui::LanPreferencesForm)
 {
@@ -37,7 +41,25 @@ LanPreferencesForm::LanPreferencesForm(
   setAttribute(Qt::WA_Maemo5StackedWindow);
   setWindowFlags(windowFlags() | Qt::Window);
 
+  // There are seven indicator brightness levels available:
+  ui->indicatorBrightnessComboBox->addItem("1 (2.5 mA)");
+  ui->indicatorBrightnessComboBox->addItem("2 (5 mA)");
+  ui->indicatorBrightnessComboBox->addItem("3 (7.5 mA)");
+  ui->indicatorBrightnessComboBox->addItem("4 (10 mA)");
+  ui->indicatorBrightnessComboBox->addItem("5 (12.5 mA)");
+  ui->indicatorBrightnessComboBox->addItem("6 (15 mA)");
+  ui->indicatorBrightnessComboBox->addItem("7 (17.5 mA)");
+
   QSettings settings("pietrzak.org", "Lanterne");
+
+  if (settings.contains("UseTorchButtonAsMorseKey"))
+  {
+    bool ucbamk = settings.value("UseTorchButtonAsMorseKey").toBool();
+
+    ui->morseKeyCheckBox->setChecked(ucbamk);
+
+    mainWindow->setUseTorchButtonAsMorseKey(ucbamk);
+  }
 
   if (settings.contains("IgnoreCameraCover"))
   {
@@ -47,6 +69,45 @@ LanPreferencesForm::LanPreferencesForm(
 
     mainWindow->setIgnoreCameraCover(icc);
   }
+
+  if (settings.contains("UseIndicatorLEDAsTorch"))
+  {
+    bool uilat = settings.value("UseIndicatorLEDAsTorch").toBool();
+
+    ui->indicatorLEDCheckBox->setChecked(uilat);
+
+    mainWindow->useIndicatorLED(uilat);
+  }
+
+  if (settings.contains("IndicatorBrightnessLevel"))
+  {
+    int ibl = settings.value("IndicatorBrightnessLevel").toInt();
+
+    ui->indicatorBrightnessComboBox->setCurrentIndex(ibl);
+  }
+
+/*
+  if (settings.contains("DisableCameraApp"))
+  {
+    bool dca = settings.value("DisableCameraApp").toBool();
+
+    ui->disableCameraCheckBox->setChecked(dca);
+
+    if (dca)
+    {
+      disableCameraApp();
+    }
+  }
+*/
+
+  if (settings.contains("UseCameraButtonForTorch"))
+  {
+    bool ucbft = settings.value("UseCameraButtonForTorch").toBool();
+
+    ui->cameraButtonCheckBox->setChecked(ucbft);
+
+    mainWindow->setUseCameraButton(ucbft);
+  }
 }
 
 
@@ -55,13 +116,110 @@ LanPreferencesForm::~LanPreferencesForm()
   QSettings settings("pietrzak.org", "Lanterne");
 
   settings.setValue(
+    "UseTorchButtonAsMorseKey",
+    ui->morseKeyCheckBox->isChecked());
+
+  settings.setValue(
     "IgnoreCameraCover", 
     ui->disableCoverCheckBox->isChecked());
+
+  settings.setValue(
+    "UseIndicatorLEDAsTorch",
+    ui->indicatorLEDCheckBox->isChecked());
+
+  settings.setValue(
+    "IndicatorBrightnessLevel",
+    ui->indicatorBrightnessComboBox->currentIndex());
+
+/*
+  settings.setValue(
+    "DisableCameraApp",
+    ui->disableCameraCheckBox->isChecked());
+*/
+
+  settings.setValue(
+    "UseCameraButtonForTorch",
+    ui->cameraButtonCheckBox->isChecked());
+
+/*
+  if (cameraDisabled)
+  {
+    // Turn the camera app back on:
+    enableCameraApp();
+  }
+*/
 
   delete ui;
 }
 
-void LanPreferencesForm::on_disableCoverCheckBox_toggled(bool checked)
+
+void LanPreferencesForm::on_morseKeyCheckBox_toggled(bool checked)
+{
+  mainWindow->setUseTorchButtonAsMorseKey(checked);
+}
+
+
+void LanPreferencesForm::on_disableCoverCheckBox_toggled(
+  bool checked)
 {
   mainWindow->setIgnoreCameraCover(checked);
 }
+
+
+void LanPreferencesForm::on_indicatorLEDCheckBox_toggled(
+  bool checked)
+{
+  mainWindow->useIndicatorLED(checked);
+}
+
+
+void LanPreferencesForm::on_indicatorBrightnessComboBox_currentIndexChanged(
+  int index)
+{
+  mainWindow->setIndicatorBrightnessLevel(index + 1);
+}
+
+
+/*
+void LanPreferencesForm::on_disableCameraCheckBox_toggled(
+  bool checked)
+{
+  if (checked)
+  {
+    disableCameraApp();
+  }
+  else if (cameraDisabled)
+  {
+    enableCameraApp();
+  }
+}
+*/
+
+
+void LanPreferencesForm::on_cameraButtonCheckBox_toggled(
+  bool checked)
+{
+  mainWindow->setUseCameraButton(checked);
+}
+
+
+/*
+void LanPreferencesForm::disableCameraApp()
+{
+  QProcess process;
+  process.execute("/usr/sbin/dsmetool -k /usr/bin/camera-ui");
+
+  cameraDisabled = true;
+}
+*/
+
+
+/*
+void LanPreferencesForm::enableCameraApp()
+{
+  QProcess process;
+  process.execute("/usr/sbin/dsmetool -t /usr/bin/camera-ui");
+
+  cameraDisabled = false;
+}
+*/

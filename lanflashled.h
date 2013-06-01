@@ -36,13 +36,12 @@ public:
 
   ~LanFlashLED();
 
-  // Toggle on/off command:
+  // Torch controls:
   void toggleTorch();
-
-  // Discrete on/off commands:
   void turnTorchOn();
   void turnTorchOff();
 
+  // Flash strobe controls:
   int getMinFlash();
   int getMaxFlash();
   int getMinTime();
@@ -56,6 +55,13 @@ public:
     int duration);
 
   void strobe();
+
+  // Indicator controls:
+  void toggleIndicator();
+  void turnIndicatorOn();
+  void turnIndicatorOff();
+  void setIndicatorBrightnessLevel(
+    int brightness);
 
 private:
   void openFlashDevice();
@@ -73,6 +79,11 @@ private:
   int minTime;
   int maxTime;
   int chosenTime;
+
+  int minIndicator;
+  int maxIndicator;
+  int chosenIndicator;
+  bool indicatorOn;
 };
 
 #endif // LANFLASHLED_H

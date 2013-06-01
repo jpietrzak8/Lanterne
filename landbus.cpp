@@ -50,10 +50,13 @@ const QDBusArgument & operator>>(
 }
 
 
+// Now, on to the actual LanDBus methods:
+
 LanDBus::LanDBus()
-  : halCameraShutter(0)
+  : halCameraShutter(0),
+    halCameraButtonLaunch(0)
 {
-  // Set up the QDBusInterface:
+  // Set up the camera shutter interface:
 
   halCameraShutter = new QDBusInterface(
     "org.freedesktop.Hal",
@@ -61,11 +64,19 @@ LanDBus::LanDBus()
     "org.freedesktop.Hal.Device",
     QDBusConnection::systemBus());
 
-  // Connect any camera cover updates to our slot:
+  // Set up the camera button interface:
 
+  halCameraButtonLaunch = new QDBusInterface(
+    "org.freedesktop.Hal",
+    "/org/freedesktop/Hal/devices/platform_cam_launch",
+    "org.freedesktop.Hal.Device",
+    QDBusConnection::systemBus());
+
+  // Some annoying QT DBus metatypes:
   qDBusRegisterMetaType<DBusProperty>();
   qDBusRegisterMetaType<QList<DBusProperty> >();
 
+  // Connect any camera cover updates to our cover slot:
   QDBusConnection::systemBus().connect(
     "",
     "/org/freedesktop/Hal/devices/platform_cam_shutter",
@@ -73,6 +84,15 @@ LanDBus::LanDBus()
     "PropertyModified",
     this,
     SLOT(cameraCoverPropertyModified(int, QList<DBusProperty>)));
+
+  // Connect any camera button updates to our button slot:
+  QDBusConnection::systemBus().connect(
+    "",
+    "/org/freedesktop/Hal/devices/platform_cam_launch",
+    "org.freedesktop.Hal.Device",
+    "PropertyModified",
+    this,
+    SLOT(cameraLaunchPropertyModified(int, QList<DBusProperty>)));
 }
 
 
@@ -100,4 +120,18 @@ void LanDBus::cameraCoverPropertyModified(
   Q_UNUSED(count);
   Q_UNUSED(properties);
   checkCameraCoverStatus();
+}
+
+
+void LanDBus::cameraLaunchPropertyModified(
+  int count,
+  QList<DBusProperty> properties)
+{
+  Q_UNUSED(count);
+  Q_UNUSED(properties);
+
+  QDBusMessage message =
+    halCameraButtonLaunch->call("GetProperty", "button.state.value");
+
+  emit cameraButtonChanged(message.arguments().at(0).toBool());
 }
