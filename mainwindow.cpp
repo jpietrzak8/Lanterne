@@ -50,6 +50,7 @@ MainWindow::MainWindow(
     cameraCoverClosed(true),
     ignoreCameraCover(false),
     useIndicatorLEDAsTorch(false),
+    coverClosesApp(false),
     useCameraButton(false),
     ui(new Ui::MainWindow)
 {
@@ -294,6 +295,13 @@ void MainWindow::setIndicatorBrightnessLevel(
 }
 
 
+void MainWindow::setCoverClosesApp(
+  bool cca)
+{
+  coverClosesApp = cca;
+}
+
+
 void MainWindow::strobe()
 {
   // Do nothing if camera cover is closed:
@@ -317,6 +325,12 @@ void MainWindow::updateCameraCover(
     }
 
     turnTorchOff();
+
+    // If "coverClosesApp" has been set, exit Linguine immediately:
+    if (coverClosesApp)
+    {
+      QApplication::quit();
+    }
   }
 }
 
@@ -362,6 +376,23 @@ void MainWindow::on_actionAbout_triggered()
   }
 
   aboutForm->show();
+}
+
+
+void MainWindow::on_actionStrobe_Flash_triggered()
+{
+  if (morseForm)
+  {
+    morseForm->stopTimer();
+    loopRunning = false;
+  }
+
+  if (!strobeForm)
+  {
+    strobeForm = new LanStrobeForm(this);
+  }
+
+  strobeForm->show();
 }
 
 
@@ -419,6 +450,7 @@ void MainWindow::on_torchButton_released()
 }
 
 
+/*
 void MainWindow::on_strobeButton_clicked()
 {
   if (morseForm)
@@ -434,6 +466,7 @@ void MainWindow::on_strobeButton_clicked()
 
   strobeForm->show();
 }
+*/
 
 
 void MainWindow::on_morseButton_clicked()

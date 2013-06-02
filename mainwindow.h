@@ -88,6 +88,9 @@ public:
   void setIndicatorBrightnessLevel(
     int brightness);
 
+  void setCoverClosesApp(
+    bool cca);
+
 public slots:
   void strobe();
 
@@ -98,13 +101,14 @@ public slots:
     bool pressed);
 
 private slots:
+  void on_actionStrobe_Flash_triggered();
   void on_actionPreferences_triggered();
   void on_actionAbout_triggered();
 
   void on_torchButton_clicked();
   void on_torchButton_pressed();
   void on_torchButton_released();
-  void on_strobeButton_clicked();
+//  void on_strobeButton_clicked();
   void on_morseButton_clicked();
   void on_sosButton_clicked();
   void on_torchContinuousButton_clicked();
@@ -124,6 +128,8 @@ private:
   bool ignoreCameraCover;
 
   bool useIndicatorLEDAsTorch;
+
+  bool coverClosesApp;
 
   bool useCameraButton;
 

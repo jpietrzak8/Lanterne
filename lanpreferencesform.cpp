@@ -86,6 +86,15 @@ LanPreferencesForm::LanPreferencesForm(
     ui->indicatorBrightnessComboBox->setCurrentIndex(ibl);
   }
 
+  if (settings.contains("CoverClosesApp"))
+  {
+    bool cca = settings.value("CoverClosesApp").toBool();
+
+    ui->closeAppCheckBox->setChecked(cca);
+
+    mainWindow->setCoverClosesApp(cca);
+  }
+
 /*
   if (settings.contains("DisableCameraApp"))
   {
@@ -130,6 +139,10 @@ LanPreferencesForm::~LanPreferencesForm()
   settings.setValue(
     "IndicatorBrightnessLevel",
     ui->indicatorBrightnessComboBox->currentIndex());
+
+  settings.setValue(
+    "CoverClosesApp",
+    ui->closeAppCheckBox->isChecked());
 
 /*
   settings.setValue(
@@ -177,6 +190,12 @@ void LanPreferencesForm::on_indicatorBrightnessComboBox_currentIndexChanged(
   int index)
 {
   mainWindow->setIndicatorBrightnessLevel(index + 1);
+}
+
+
+void LanPreferencesForm::on_closeAppCheckBox_toggled(bool checked)
+{
+  mainWindow->setCoverClosesApp(checked);
 }
 
 

@@ -31,7 +31,7 @@
         <height>398</height>
        </rect>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout">
+      <layout class="QVBoxLayout" name="verticalLayout_3">
        <item>
         <widget class="QCheckBox" name="morseKeyCheckBox">
          <property name="enabled">
@@ -66,25 +66,52 @@
         </widget>
        </item>
        <item>
-        <widget class="QCheckBox" name="indicatorLEDCheckBox">
-         <property name="text">
-          <string>Use Indicator LED as Torch</string>
+        <widget class="QFrame" name="frame">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
          </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout">
+          <item>
+           <widget class="QCheckBox" name="indicatorLEDCheckBox">
+            <property name="text">
+             <string>Use Indicator LED as Torch</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="indicatorBrightnessLabel">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Choose Indicator LED Brightness:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="indicatorBrightnessComboBox"/>
+          </item>
+         </layout>
         </widget>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <item>
-          <widget class="QLabel" name="indicatorBrightnessLabel">
-           <property name="text">
-            <string>Choose Indicator LED Brightness</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QComboBox" name="indicatorBrightnessComboBox"/>
-         </item>
-        </layout>
+        <widget class="QCheckBox" name="closeAppCheckBox">
+         <property name="text">
+          <string>Exit when Camera Cover is Closed</string>
+         </property>
+        </widget>
        </item>
        <item>
         <widget class="QCheckBox" name="cameraButtonCheckBox">

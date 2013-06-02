@@ -1,3 +1,9 @@
+lanterne (0.5.1) unstable; urgency=low
+  * Added the option to exit the app when the camera cover is closed.
+  * Various tweaks to the UI, to make Lanterne a bit more usable as a general-purpose flashlight app.
+
+ -- John Pietrzak <jpietrzak8@gmail.com>  Sat, 01 Jun 2013 20:00:59 -0400
+
 lanterne (0.5.0) unstable; urgency=low
   * Added support for indicator LED.  On the preferences panel, the user can select to use the indicator LED for the torch, as well as select between seven levels of brightness for it.
   * The Torch On/Off button can now be used as a Morse Key (torch stays on for as long as you keep the button pressed).  This behavior can be controlled on the preferences panel.
