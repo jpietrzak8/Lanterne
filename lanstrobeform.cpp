@@ -33,9 +33,8 @@ LanStrobeForm::LanStrobeForm(
   MainWindow *mw)
   : QWidget(mw),
     mainWindow(mw),
-    minPause(50),
-    maxPause(2000),
-    chosenPause(500),
+    strobePeriod(500),
+    dutyCycle(10),
     ledTimer(0),
     ui(new Ui::LanStrobeForm)
 {
@@ -55,39 +54,35 @@ LanStrobeForm::LanStrobeForm(
   }
 
   // set up the spin boxes:
-  ui->flashDurationSpinBox->setMinimum(mainWindow->getMinTime() / 1000);
-  ui->flashDurationSpinBox->setMaximum(mainWindow->getMaxTime() / 1000);
+  ui->strobePeriodSpinBox->setMinimum(100);
+  ui->strobePeriodSpinBox->setMaximum(5000);
 
-  int duration = (mainWindow->getMaxTime() / 1000) / 2;
-
-  if (settings.contains("CurrentFlashDuration"))
+  if (settings.contains("CurrentStrobePeriod"))
   {
-    int cfd = settings.value("CurrentFlashDuration").toInt();
+    int csp = settings.value("CurrentStrobePeriod").toInt();
 
-    if ( (cfd >= (mainWindow->getMinTime() / 1000))
-      && (cfd <= (mainWindow->getMaxTime() / 1000)))
+    if ((csp >= 100) && (csp <= 5000))
     {
-      duration = cfd;
+      strobePeriod = csp;
     }
   }
 
-  ui->flashDurationSpinBox->setValue(duration);
+  ui->strobePeriodSpinBox->setValue(strobePeriod);
 
-  ui->flashPauseSpinBox->setMinimum(minPause);
-  ui->flashPauseSpinBox->setMaximum(maxPause);
+  ui->dutyCycleSpinBox->setMinimum(1);
+  ui->dutyCycleSpinBox->setMaximum(25);
 
-  if (settings.contains("CurrentStrobePause"))
+  if (settings.contains("CurrentDutyCycle"))
   {
-    int csp = settings.value("CurrentStrobePause").toInt();
+    int cdc = settings.value("CurrentDutyCycle").toInt();
 
-    if ( (csp >= minPause)
-      && (csp <= maxPause))
+    if ((cdc >= 1) && (cdc <= 25))
     {
-      chosenPause = csp;
+      dutyCycle = cdc;
     }
   }
 
-  ui->flashPauseSpinBox->setValue(chosenPause);
+  ui->dutyCycleSpinBox->setValue(dutyCycle);
 }
 
 
@@ -100,12 +95,12 @@ LanStrobeForm::~LanStrobeForm()
     ui->flashBrightnessComboBox->currentIndex());
 
   settings.setValue(
-    "CurrentFlashDuration",
-    ui->flashDurationSpinBox->value());
+    "CurrentStrobePeriod",
+    ui->strobePeriodSpinBox->value());
 
   settings.setValue(
-    "CurrentStrobePause",
-    ui->flashPauseSpinBox->value());
+    "CurrentDutyCycle",
+    ui->dutyCycleSpinBox->value());
 
   if (ledTimer) delete ledTimer;
 
@@ -119,26 +114,19 @@ void LanStrobeForm::on_flashBrightnessComboBox_currentIndexChanged(int index)
 }
 
 
-void LanStrobeForm::on_flashDurationSpinBox_valueChanged(int arg1)
+void LanStrobeForm::on_strobePeriodSpinBox_valueChanged(int arg1)
 {
-  mainWindow->setFlashDuration(arg1 * 1000);
+  mainWindow->setFlashDuration(
+    ((arg1 * 1000) * ui->dutyCycleSpinBox->value()) / 100);
+
+  strobePeriod = arg1;
 }
 
 
-void LanStrobeForm::on_flashPauseSpinBox_valueChanged(int arg1)
+void LanStrobeForm::on_dutyCycleSpinBox_valueChanged(int arg1)
 {
-  if (arg1 < minPause)
-  {
-    chosenPause = minPause;
-  }
-  else if (arg1 > maxPause)
-  {
-    chosenPause = maxPause;
-  }
-  else
-  {
-    chosenPause = arg1;
-  }
+  mainWindow->setFlashDuration(
+    ((strobePeriod * 1000) * arg1) / 100);
 }
 
 
@@ -153,7 +141,7 @@ void LanStrobeForm::on_strobeFlashButton_pressed()
     ledTimer = new QTimer(this);
     connect(ledTimer, SIGNAL(timeout()), mainWindow, SLOT(strobe()));
 
-    ledTimer->start(chosenPause + (mainWindow->getChosenTime() / 1000));
+    ledTimer->start(strobePeriod);
   }
 }
 

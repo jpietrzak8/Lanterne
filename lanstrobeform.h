@@ -46,8 +46,8 @@ public slots:
 
 private slots:
   void on_flashBrightnessComboBox_currentIndexChanged(int index);
-  void on_flashDurationSpinBox_valueChanged(int arg1);
-  void on_flashPauseSpinBox_valueChanged(int arg1);
+  void on_strobePeriodSpinBox_valueChanged(int arg1);
+  void on_dutyCycleSpinBox_valueChanged(int arg1);
   void on_strobeFlashButton_pressed();
   void on_strobeFlashButton_released();
 
@@ -58,9 +58,8 @@ private:
 
   MainWindow *mainWindow;
 
-  int minPause;
-  int maxPause;
-  int chosenPause;
+  int strobePeriod;
+  int dutyCycle;
   QTimer *ledTimer;
 
   Ui::LanStrobeForm *ui;

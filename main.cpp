@@ -24,13 +24,52 @@
 
 #include <QtGui/QApplication>
 
-int main(int argc, char *argv[])
-{
-    QApplication app(argc, argv);
+#include <string>
+#include "lanflashled.h"
 
+int main(
+  int argc,
+  char *argv[])
+{
+  // We want to be able to run Lanterne from either a GUI or from the
+  // command line.  So, we'll use a command-line argument of "-nogui"
+  // to disable the GUI:
+
+  bool useGUI = true;
+  bool toggleTorch = false;
+  int index = 1;
+  while (index < argc)
+  {
+    if (std::string(argv[index]) == "-noGUI")
+    {
+      useGUI = false;
+    }
+    else if (std::string(argv[index]) == "-toggleTorch")
+    {
+      toggleTorch = true;
+    }
+
+    ++index;
+  }
+
+  QApplication app(argc, argv, useGUI);
+
+  if (useGUI)
+  {
     MainWindow mainWindow;
     mainWindow.setOrientation(MainWindow::ScreenOrientationAuto);
     mainWindow.showExpanded();
 
     return app.exec();
+  }
+  else
+  {
+    if (toggleTorch)
+    {
+      LanFlashLED led;
+      led.toggleTorch();
+    }
+
+    return 0;
+  }
 }

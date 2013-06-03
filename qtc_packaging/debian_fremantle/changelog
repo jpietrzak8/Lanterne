@@ -1,3 +1,8 @@
+lanterne (0.5.2) unstable; urgency=low
+  * Modified the Strobe window to use a strobe period / duty cycle mechanism for timing; also, made the timing levels more conservative (for safety).
+
+ -- John Pietrzak <jpietrzak8@gmail.com>  Sun, 02 Jun 2013 22:50:24 -0400
+
 lanterne (0.5.1) unstable; urgency=low
   * Added the option to exit the app when the camera cover is closed.
   * Various tweaks to the UI, to make Lanterne a bit more usable as a general-purpose flashlight app.
