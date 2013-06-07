@@ -49,6 +49,7 @@ public:
 
   void startSOS();
   void startE();
+  void startSupressLEDs();
   void stopTimer();
   
 private slots:
@@ -60,6 +61,7 @@ private slots:
   void runMorseCode();
   void runSOSCode();
   void runECode();
+  void runSupressLEDs();
 
 private:
   void translateTextToBits();

@@ -25,6 +25,13 @@
 
 #include <QWidget>
 
+enum StartupMode
+{
+  SteadyOn_Mode,
+  Pulsed_Mode,
+  SOS_Mode
+};
+
 namespace Ui {
 class LanPreferencesForm;
 }
@@ -40,7 +47,11 @@ public:
     MainWindow *mw);
 
   ~LanPreferencesForm();
-  
+
+  bool startupAutomatically();
+
+  StartupMode getStartupMode();
+
 private slots:
   void on_morseKeyCheckBox_toggled(bool checked);
   void on_disableCoverCheckBox_toggled(bool checked);
@@ -48,6 +59,8 @@ private slots:
   void on_indicatorBrightnessComboBox_currentIndexChanged(int index);
   void on_closeAppCheckBox_toggled(bool checked);
   void on_cameraButtonCheckBox_toggled(bool checked);
+  void on_startupCheckBox_toggled(bool checked);
+  void on_startupComboBox_currentIndexChanged(int index);
 //  void on_disableCameraCheckBox_toggled(bool checked);
 
 private:
@@ -59,6 +72,9 @@ private:
 */
 
   MainWindow *mainWindow;
+
+  bool autoStartup;
+  StartupMode mode;
 
   Ui::LanPreferencesForm *ui;
 };

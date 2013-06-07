@@ -112,6 +112,7 @@ private slots:
   void on_morseButton_clicked();
   void on_sosButton_clicked();
   void on_torchContinuousButton_clicked();
+//  void on_supressLEDButton_clicked();
 
 private:
   LanFlashLED *led;

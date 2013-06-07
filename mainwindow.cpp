@@ -88,6 +88,29 @@ MainWindow::MainWindow(
     strobeForm,
     SLOT(stopStrobe()));
 
+  // If the user has chosen auto startup, turn on the LEDs now:
+  if (preferencesForm->startupAutomatically())
+  {
+    switch (preferencesForm->getStartupMode())
+    {
+    case SteadyOn_Mode:
+      if (ignoreCameraCover || !cameraCoverClosed) turnTorchOn();
+      break;
+
+    case Pulsed_Mode:
+      on_torchContinuousButton_clicked();
+      break;
+
+    case SOS_Mode:
+      on_sosButton_clicked();
+      break;
+
+    default:
+      // Do nothing here.
+      break;
+    }
+  }
+
   QSettings settings("pietrzak.org", "Lanterne");
 
   if (!settings.contains("BrightLightWarningSeen"))
@@ -528,3 +551,25 @@ void MainWindow::on_torchContinuousButton_clicked()
     loopRunning = false;
   }
 }
+
+/*
+void MainWindow::on_supressLEDButton_clicked()
+{
+  // No need to check camera cover, as this turns nothing on:
+  if (!morseForm)
+  {
+    morseForm = new LanMorseForm(this);
+  }
+
+  if (!loopRunning)
+  {
+    morseForm->startSupressLEDs();
+    loopRunning = true;
+  }
+  else
+  {
+    morseForm->stopTimer();
+    loopRunning = false;
+  }
+}
+*/

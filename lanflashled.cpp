@@ -251,46 +251,30 @@ void LanFlashLED::strobe()
 
 void LanFlashLED::toggleIndicator()
 {
-  struct v4l2_control ctrl;
-
-  // Sanity check:
-  if (fileDescriptor == -1)
-  {
-    return;
-  }
-
-  ctrl.id = V4L2_CID_INDICATOR_INTENSITY;
-
   if (indicatorOn)
   {
-    ctrl.value = minIndicator;
+    switchIndicator(minIndicator);
     indicatorOn = false;
   }
   else
   {
-    ctrl.value = chosenIndicator;
+    switchIndicator(chosenIndicator);
     indicatorOn = true;
-  }
-
-  if (ioctl(fileDescriptor, VIDIOC_S_CTRL, &ctrl) == -1)
-  {
-    std::stringstream ss;
-    ss << "Failed to set indicator intensity to " << ctrl.value << "\n";
-    ss << "Error is " << strerror(errno) << "\n";
-    throw LanException(ss.str());
   }
 }
 
 
 void LanFlashLED::turnIndicatorOn()
 {
-  if (!indicatorOn) toggleIndicator();
+  switchIndicator(chosenIndicator);
+  indicatorOn = true;
 }
 
 
 void LanFlashLED::turnIndicatorOff()
 {
-  if (indicatorOn) toggleIndicator();
+  switchIndicator(minIndicator);
+  indicatorOn = false;
 }
 
 
@@ -316,6 +300,7 @@ void LanFlashLED::openFlashDevice()
 {
   // Not sure why "O_RDWR", but it seems to be necessary:
   fileDescriptor = open(PATH_TO_FLASH_DEVICE, O_RDWR | O_NONBLOCK, 0);
+//  fileDescriptor = open(PATH_TO_FLASH_DEVICE, O_RDWR, 0);
 
   if (fileDescriptor == -1)
   {
@@ -387,4 +372,28 @@ void LanFlashLED::openFlashDevice()
   minIndicator = qctrl.minimum;
   maxIndicator = qctrl.maximum;
   chosenIndicator = qctrl.maximum;
+}
+
+
+void LanFlashLED::switchIndicator(
+  int brightness)
+{
+  struct v4l2_control ctrl;
+
+  // Sanity check:
+  if (fileDescriptor == -1)
+  {
+    return;
+  }
+
+  ctrl.id = V4L2_CID_INDICATOR_INTENSITY;
+  ctrl.value = brightness;
+
+  if (ioctl(fileDescriptor, VIDIOC_S_CTRL, &ctrl) == -1)
+  {
+    std::stringstream ss;
+    ss << "Failed to set indicator intensity to " << ctrl.value << "\n";
+    ss << "Error is " << strerror(errno) << "\n";
+    throw LanException(ss.str());
+  }
 }

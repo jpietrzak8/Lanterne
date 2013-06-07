@@ -34,6 +34,8 @@ LanPreferencesForm::LanPreferencesForm(
   : QWidget(mw),
 //    cameraDisabled(false),
     mainWindow(mw),
+    autoStartup(false),
+    mode(SteadyOn_Mode),
     ui(new Ui::LanPreferencesForm)
 {
   ui->setupUi(this);
@@ -49,6 +51,11 @@ LanPreferencesForm::LanPreferencesForm(
   ui->indicatorBrightnessComboBox->addItem("5 (12.5 mA)");
   ui->indicatorBrightnessComboBox->addItem("6 (15 mA)");
   ui->indicatorBrightnessComboBox->addItem("7 (17.5 mA)");
+
+  // Also set up the startup mode combo box:
+  ui->startupComboBox->addItem("Steady On", SteadyOn_Mode);
+  ui->startupComboBox->addItem("Pulsed", Pulsed_Mode);
+  ui->startupComboBox->addItem("SOS", SOS_Mode);
 
   QSettings settings("pietrzak.org", "Lanterne");
 
@@ -117,6 +124,22 @@ LanPreferencesForm::LanPreferencesForm(
 
     mainWindow->setUseCameraButton(ucbft);
   }
+
+  if (settings.contains("AutoStartup"))
+  {
+    autoStartup = settings.value("AutoStartup").toBool();
+    ui->startupCheckBox->setChecked(autoStartup);
+  }
+
+  if (settings.contains("StartupMode"))
+  {
+    mode = StartupMode(settings.value("StartupMode").toInt());
+    int index = ui->startupComboBox->findData(mode);
+    if (index != -1)
+    {
+      ui->startupComboBox->setCurrentIndex(index);
+    }
+  }
 }
 
 
@@ -154,6 +177,9 @@ LanPreferencesForm::~LanPreferencesForm()
     "UseCameraButtonForTorch",
     ui->cameraButtonCheckBox->isChecked());
 
+  settings.setValue("AutoStartup", autoStartup);
+  settings.setValue("StartupMode", mode);
+
 /*
   if (cameraDisabled)
   {
@@ -163,6 +189,18 @@ LanPreferencesForm::~LanPreferencesForm()
 */
 
   delete ui;
+}
+
+
+bool LanPreferencesForm::startupAutomatically()
+{
+  return autoStartup;
+}
+
+
+StartupMode LanPreferencesForm::getStartupMode()
+{
+  return mode;
 }
 
 
@@ -219,6 +257,20 @@ void LanPreferencesForm::on_cameraButtonCheckBox_toggled(
   bool checked)
 {
   mainWindow->setUseCameraButton(checked);
+}
+
+
+void LanPreferencesForm::on_startupCheckBox_toggled(
+  bool checked)
+{
+  autoStartup = checked;
+}
+
+
+void LanPreferencesForm::on_startupComboBox_currentIndexChanged(
+  int index)
+{
+  mode = StartupMode(ui->startupComboBox->itemData(index).toInt());
 }
 
 

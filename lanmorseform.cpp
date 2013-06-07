@@ -38,6 +38,7 @@ LanMorseForm::LanMorseForm(
     mainWindow(mw),
     morseRunning(false),
     morsePaused(false),
+    runMorseContinuously(false),
     timer(0),
     ui(new Ui::LanMorseForm)
 {
@@ -128,6 +129,25 @@ void LanMorseForm::startE()
   eCodePosition = eCodeBits.begin();
   timer = new QTimer(this);
   connect (timer, SIGNAL(timeout()), this, SLOT(runECode()));
+  timer->start(ui->dotDurationSpinBox->value());
+}
+
+
+void LanMorseForm::startSupressLEDs()
+{
+  if (timer)
+  {
+    delete timer;
+    timer = 0;
+  }
+
+  if (morseRunning)
+  {
+    morsePaused = true;
+  }
+
+  timer = new QTimer(this);
+  connect(timer, SIGNAL(timeout()), this, SLOT(runSupressLEDs()));
   timer->start(ui->dotDurationSpinBox->value());
 }
 
@@ -316,6 +336,12 @@ void LanMorseForm::runECode()
   }
 
   ++eCodePosition;
+}
+
+
+void LanMorseForm::runSupressLEDs()
+{
+  mainWindow->turnTorchOff();
 }
 
 

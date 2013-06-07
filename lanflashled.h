@@ -66,6 +66,9 @@ public:
 private:
   void openFlashDevice();
 
+  void switchIndicator(
+    int brightness);
+
   int fileDescriptor;
 
   int minTorch;
