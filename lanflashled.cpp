@@ -296,6 +296,12 @@ void LanFlashLED::setIndicatorBrightnessLevel(
 }
 
 
+bool LanFlashLED::ledsCurrentlyLit()
+{
+  return (torchOn || indicatorOn);
+}
+
+
 void LanFlashLED::openFlashDevice()
 {
   // Not sure why "O_RDWR", but it seems to be necessary:

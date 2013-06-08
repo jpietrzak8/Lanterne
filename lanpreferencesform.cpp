@@ -140,6 +140,24 @@ LanPreferencesForm::LanPreferencesForm(
       ui->startupComboBox->setCurrentIndex(index);
     }
   }
+
+  if (settings.contains("EnableOffTimer"))
+  {
+    bool eot = settings.value("EnableOffTimer").toBool();
+
+    ui->offTimerCheckBox->setChecked(eot);
+
+    mainWindow->setEnableOffTimer(eot);
+  }
+
+  if (settings.contains("OffTimerDuration"))
+  {
+    int otd = settings.value("OffTimerDuration").toInt();
+
+    ui->offTimerSpinBox->setValue(otd);
+
+    mainWindow->setOffTimerDuration(otd);
+  }
 }
 
 
@@ -179,6 +197,9 @@ LanPreferencesForm::~LanPreferencesForm()
 
   settings.setValue("AutoStartup", autoStartup);
   settings.setValue("StartupMode", mode);
+
+  settings.setValue("EnableOffTimer", ui->offTimerCheckBox->isChecked());
+  settings.setValue("OffTimerDuration", ui->offTimerSpinBox->value());
 
 /*
   if (cameraDisabled)
@@ -294,3 +315,15 @@ void LanPreferencesForm::enableCameraApp()
   cameraDisabled = false;
 }
 */
+
+
+void LanPreferencesForm::on_offTimerCheckBox_toggled(bool checked)
+{
+  mainWindow->setEnableOffTimer(checked);
+}
+
+
+void LanPreferencesForm::on_offTimerSpinBox_valueChanged(int arg1)
+{
+  mainWindow->setOffTimerDuration(arg1);
+}

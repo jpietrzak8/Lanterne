@@ -61,6 +61,8 @@ private slots:
   void on_cameraButtonCheckBox_toggled(bool checked);
   void on_startupCheckBox_toggled(bool checked);
   void on_startupComboBox_currentIndexChanged(int index);
+  void on_offTimerCheckBox_toggled(bool checked);
+  void on_offTimerSpinBox_valueChanged(int arg1);
 //  void on_disableCameraCheckBox_toggled(bool checked);
 
 private:

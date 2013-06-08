@@ -63,6 +63,8 @@ public:
   void setIndicatorBrightnessLevel(
     int brightness);
 
+  bool ledsCurrentlyLit();
+
 private:
   void openFlashDevice();
 

@@ -27,12 +27,13 @@
 
 #include "landbus.h"
 
+#include <QTimer>
+
 class LanFlashLED;
 class LanAboutForm;
 class LanStrobeForm;
 class LanMorseForm;
 class LanPreferencesForm;
-class QTimer;
 
 namespace Ui {
   class MainWindow;
@@ -91,6 +92,12 @@ public:
   void setCoverClosesApp(
     bool cca);
 
+  void setEnableOffTimer(
+    bool enabled);
+
+  void setOffTimerDuration(
+    int duration);
+
 public slots:
   void strobe();
 
@@ -114,7 +121,11 @@ private slots:
   void on_torchContinuousButton_clicked();
 //  void on_supressLEDButton_clicked();
 
+  void torchTimeout();
+
 private:
+  void setupOffTimer();
+
   LanFlashLED *led;
   LanAboutForm *aboutForm;
   LanStrobeForm *strobeForm;
@@ -133,6 +144,10 @@ private:
   bool coverClosesApp;
 
   bool useCameraButton;
+
+  bool useOffTimer;
+  int offTimerDuration;
+  QTimer offTimer;
 
   Ui::MainWindow *ui;
 };

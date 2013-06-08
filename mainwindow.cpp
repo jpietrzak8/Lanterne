@@ -52,6 +52,7 @@ MainWindow::MainWindow(
     useIndicatorLEDAsTorch(false),
     coverClosesApp(false),
     useCameraButton(false),
+    useOffTimer(false),
     ui(new Ui::MainWindow)
 {
   ui->setupUi(this);
@@ -59,6 +60,13 @@ MainWindow::MainWindow(
   setAttribute(Qt::WA_Maemo5StackedWindow);
 
   led = new LanFlashLED();
+
+  // Set up the timer:
+  connect(
+    &offTimer,
+    SIGNAL(timeout()),
+    this,
+    SLOT(torchTimeout()));
 
   // Set up the user preferences (along with the window):
   preferencesForm = new LanPreferencesForm(this);
@@ -211,6 +219,15 @@ void MainWindow::toggleTorch()
   {
     led->toggleTorch();
   }
+
+  if (led->ledsCurrentlyLit())
+  {
+    setupOffTimer();
+  }
+  else
+  {
+    offTimer.stop();
+  }
 }
 
 
@@ -227,6 +244,8 @@ void MainWindow::turnTorchOn()
   {
     led->turnTorchOn();
   }
+
+  setupOffTimer();
 }
 
 
@@ -234,6 +253,7 @@ void MainWindow::turnTorchOff()
 {
   led->turnIndicatorOff();
   led->turnTorchOff();
+  offTimer.stop();
 }
 
 
@@ -322,6 +342,32 @@ void MainWindow::setCoverClosesApp(
   bool cca)
 {
   coverClosesApp = cca;
+}
+
+
+void MainWindow::setEnableOffTimer(
+  bool enabled)
+{
+  useOffTimer = enabled;
+
+  if (useOffTimer)
+  {
+    if (loopRunning || led->ledsCurrentlyLit())
+    {
+      setupOffTimer();
+    }
+  }
+  else
+  {
+    offTimer.stop();
+  }
+}
+
+
+void MainWindow::setOffTimerDuration(
+  int duration)
+{
+  offTimerDuration = duration;
 }
 
 
@@ -522,11 +568,13 @@ void MainWindow::on_sosButton_clicked()
   {
     morseForm->startSOS();
     loopRunning = true;
+    setupOffTimer();
   }
   else
   {
     morseForm->stopTimer();
     loopRunning = false;
+    offTimer.stop();
   }
 }
 
@@ -544,11 +592,13 @@ void MainWindow::on_torchContinuousButton_clicked()
   {
     morseForm->startE();
     loopRunning = true;
+    setupOffTimer();
   }
   else
   {
     morseForm->stopTimer();
     loopRunning = false;
+    offTimer.stop();
   }
 }
 
@@ -573,3 +623,33 @@ void MainWindow::on_supressLEDButton_clicked()
   }
 }
 */
+
+
+void MainWindow::torchTimeout()
+{
+  if (loopRunning)
+  {
+    morseForm->stopTimer();
+    loopRunning = false;
+  }
+  else
+  {
+    turnTorchOff();
+  }
+
+  offTimer.stop();
+}
+
+
+void MainWindow::setupOffTimer()
+{
+  if (useOffTimer)
+  {
+    // multiply minutes by 60 seconds by 1000 milliseconds:
+    unsigned int milliseconds = offTimerDuration * 60000;
+
+    // Start off the timer immediately
+    offTimer.stop();
+    offTimer.start(milliseconds);
+  }
+}
