@@ -36,12 +36,9 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="QCheckBox" name="morseKeyCheckBox">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
+        <widget class="QCheckBox" name="closeAppCheckBox">
          <property name="text">
-          <string>Use Torch Button as Morse Key</string>
+          <string>Exit when Camera Cover is Closed</string>
          </property>
         </widget>
        </item>
@@ -84,13 +81,6 @@
          </property>
          <layout class="QVBoxLayout" name="verticalLayout">
           <item>
-           <widget class="QCheckBox" name="indicatorLEDCheckBox">
-            <property name="text">
-             <string>Use Indicator LED as Torch</string>
-            </property>
-           </widget>
-          </item>
-          <item>
            <widget class="QLabel" name="indicatorBrightnessLabel">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -99,7 +89,7 @@
              </sizepolicy>
             </property>
             <property name="text">
-             <string>Choose Indicator LED Brightness:</string>
+             <string>Choose Red LED Brightness:</string>
             </property>
            </widget>
           </item>
@@ -110,9 +100,12 @@
         </widget>
        </item>
        <item>
-        <widget class="QCheckBox" name="closeAppCheckBox">
+        <widget class="QCheckBox" name="morseKeyCheckBox">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
          <property name="text">
-          <string>Exit when Camera Cover is Closed</string>
+          <string>Use Torch Button as Morse Key</string>
          </property>
         </widget>
        </item>
@@ -176,6 +169,12 @@
           </item>
           <item>
            <widget class="QLabel" name="timeoutLabel">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="text">
              <string>Time Torch stays lit (in minutes):</string>
             </property>
@@ -218,6 +217,22 @@
     <hint type="destinationlabel">
      <x>124</x>
      <y>339</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>disableCoverCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>closeAppCheckBox</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>199</x>
+     <y>60</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>39</y>
     </hint>
    </hints>
   </connection>

@@ -62,7 +62,9 @@ OTHER_FILES += \
     qtc_packaging/debian_fremantle/changelog \
     doc/about.html \
     COPYING \
-    LICENSE.md
+    LICENSE.md \
+    icons/redled.png \
+    icons/whiteled.png
 
 RESOURCES += \
     LanterneResources.qrc

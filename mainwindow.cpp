@@ -128,6 +128,15 @@ MainWindow::MainWindow(
       "WARNING: The N900 Flash LEDs are very bright -- avoid looking directly at them!",
       0);
   }
+
+  if (settings.contains("UseIndicatorLEDAsTorch"))
+  {
+    bool uilat = settings.value("UseIndicatorLEDAsTorch").toBool();
+
+    ui->redButton->setEnabled(uilat); // automagically sets whitebutton as well
+
+    useIndicatorLED(uilat);
+  }
 }
 
 
@@ -138,6 +147,8 @@ MainWindow::~MainWindow()
   {
     settings.setValue("BrightLightWarningSeen", true);
   }
+
+  settings.setValue("UseIndicatorLEDAsTorch", ui->redButton->isEnabled());
 
   if (aboutForm) delete aboutForm;
   if (strobeForm) delete strobeForm;
@@ -323,10 +334,15 @@ void MainWindow::setUseCameraButton(
 void MainWindow::useIndicatorLED(
   bool useILED)
 {
+  if (useIndicatorLEDAsTorch != useILED)
+  {
+    led->swapLEDs();
+  }
+
   useIndicatorLEDAsTorch = useILED;
 
   // Turn off the torch in either case:
-  turnTorchOff();
+//  turnTorchOff();
 }
 
 
@@ -462,6 +478,18 @@ void MainWindow::on_actionStrobe_Flash_triggered()
   }
 
   strobeForm->show();
+}
+
+
+void MainWindow::on_whiteButton_clicked()
+{
+  useIndicatorLED(false);
+}
+
+
+void MainWindow::on_redButton_clicked()
+{
+  useIndicatorLED(true);
 }
 
 

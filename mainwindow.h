@@ -112,6 +112,8 @@ private slots:
   void on_actionPreferences_triggered();
   void on_actionAbout_triggered();
 
+  void on_whiteButton_clicked();
+  void on_redButton_clicked();
   void on_torchButton_clicked();
   void on_torchButton_pressed();
   void on_torchButton_released();

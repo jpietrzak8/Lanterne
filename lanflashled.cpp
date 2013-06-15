@@ -302,6 +302,21 @@ bool LanFlashLED::ledsCurrentlyLit()
 }
 
 
+void LanFlashLED::swapLEDs()
+{
+  if (torchOn)
+  {
+    turnTorchOff();
+    turnIndicatorOn();
+  }
+  else if (indicatorOn)
+  {
+    turnIndicatorOff();
+    turnTorchOn();
+  }
+}
+
+
 void LanFlashLED::openFlashDevice()
 {
   // Not sure why "O_RDWR", but it seems to be necessary:

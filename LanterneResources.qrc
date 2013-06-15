@@ -1,5 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file>doc/about.html</file>
+        <file>icons/redled.png</file>
+        <file>icons/whiteled.png</file>
     </qresource>
 </RCC>

@@ -77,6 +77,7 @@ LanPreferencesForm::LanPreferencesForm(
     mainWindow->setIgnoreCameraCover(icc);
   }
 
+/*
   if (settings.contains("UseIndicatorLEDAsTorch"))
   {
     bool uilat = settings.value("UseIndicatorLEDAsTorch").toBool();
@@ -85,6 +86,7 @@ LanPreferencesForm::LanPreferencesForm(
 
     mainWindow->useIndicatorLED(uilat);
   }
+*/
 
   if (settings.contains("IndicatorBrightnessLevel"))
   {
@@ -173,9 +175,11 @@ LanPreferencesForm::~LanPreferencesForm()
     "IgnoreCameraCover", 
     ui->disableCoverCheckBox->isChecked());
 
+/*
   settings.setValue(
     "UseIndicatorLEDAsTorch",
     ui->indicatorLEDCheckBox->isChecked());
+*/
 
   settings.setValue(
     "IndicatorBrightnessLevel",
@@ -238,11 +242,13 @@ void LanPreferencesForm::on_disableCoverCheckBox_toggled(
 }
 
 
+/*
 void LanPreferencesForm::on_indicatorLEDCheckBox_toggled(
   bool checked)
 {
   mainWindow->useIndicatorLED(checked);
 }
+*/
 
 
 void LanPreferencesForm::on_indicatorBrightnessComboBox_currentIndexChanged(

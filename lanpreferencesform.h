@@ -55,7 +55,7 @@ public:
 private slots:
   void on_morseKeyCheckBox_toggled(bool checked);
   void on_disableCoverCheckBox_toggled(bool checked);
-  void on_indicatorLEDCheckBox_toggled(bool checked);
+//  void on_indicatorLEDCheckBox_toggled(bool checked);
   void on_indicatorBrightnessComboBox_currentIndexChanged(int index);
   void on_closeAppCheckBox_toggled(bool checked);
   void on_cameraButtonCheckBox_toggled(bool checked);

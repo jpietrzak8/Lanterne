@@ -64,6 +64,7 @@ public:
     int brightness);
 
   bool ledsCurrentlyLit();
+  void swapLEDs();
 
 private:
   void openFlashDevice();
