@@ -146,7 +146,11 @@
            </widget>
           </item>
           <item>
-           <widget class="QComboBox" name="startupComboBox"/>
+           <widget class="QComboBox" name="startupComboBox">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -193,6 +197,16 @@
             </property>
            </widget>
           </item>
+          <item>
+           <widget class="QCheckBox" name="flashAfterTimeoutCheckBox">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="text">
+             <string>Flash Red LED After Timeout</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>
@@ -233,6 +247,22 @@
     <hint type="destinationlabel">
      <x>199</x>
      <y>39</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>offTimerCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>flashAfterTimeoutCheckBox</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>199</x>
+     <y>545</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>714</y>
     </hint>
    </hints>
   </connection>

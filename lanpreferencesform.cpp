@@ -160,6 +160,15 @@ LanPreferencesForm::LanPreferencesForm(
 
     mainWindow->setOffTimerDuration(otd);
   }
+
+  if (settings.contains("FlashAfterTimeout"))
+  {
+    bool fat = settings.value("FlashAfterTimeout").toBool();
+
+    ui->flashAfterTimeoutCheckBox->setChecked(fat);
+
+    mainWindow->setFlashAfterTimeout(fat);
+  }
 }
 
 
@@ -204,6 +213,9 @@ LanPreferencesForm::~LanPreferencesForm()
 
   settings.setValue("EnableOffTimer", ui->offTimerCheckBox->isChecked());
   settings.setValue("OffTimerDuration", ui->offTimerSpinBox->value());
+  settings.setValue(
+    "FlashAfterTimeout",
+    ui->flashAfterTimeoutCheckBox->isChecked());
 
 /*
   if (cameraDisabled)
@@ -332,4 +344,10 @@ void LanPreferencesForm::on_offTimerCheckBox_toggled(bool checked)
 void LanPreferencesForm::on_offTimerSpinBox_valueChanged(int arg1)
 {
   mainWindow->setOffTimerDuration(arg1);
+}
+
+
+void LanPreferencesForm::on_flashAfterTimeoutCheckBox_toggled(bool checked)
+{
+  mainWindow->setFlashAfterTimeout(checked);
 }

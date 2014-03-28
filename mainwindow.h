@@ -98,6 +98,9 @@ public:
   void setOffTimerDuration(
     int duration);
 
+  void setFlashAfterTimeout(
+    bool flag);
+
 public slots:
   void strobe();
 
@@ -150,6 +153,7 @@ private:
   bool useOffTimer;
   int offTimerDuration;
   QTimer offTimer;
+  bool flashAfterTimeout;
 
   Ui::MainWindow *ui;
 };

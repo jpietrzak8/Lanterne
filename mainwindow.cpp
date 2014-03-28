@@ -53,6 +53,7 @@ MainWindow::MainWindow(
     coverClosesApp(false),
     useCameraButton(false),
     useOffTimer(false),
+    flashAfterTimeout(false),
     ui(new Ui::MainWindow)
 {
   ui->setupUi(this);
@@ -133,9 +134,14 @@ MainWindow::MainWindow(
   {
     bool uilat = settings.value("UseIndicatorLEDAsTorch").toBool();
 
-    ui->redButton->setEnabled(uilat); // automagically sets whitebutton as well
+    ui->whiteButton->setChecked(!uilat);
+    ui->redButton->setChecked(uilat);
 
     useIndicatorLED(uilat);
+  }
+  else
+  {
+    ui->whiteButton->setChecked(true);
   }
 }
 
@@ -148,7 +154,7 @@ MainWindow::~MainWindow()
     settings.setValue("BrightLightWarningSeen", true);
   }
 
-  settings.setValue("UseIndicatorLEDAsTorch", ui->redButton->isEnabled());
+  settings.setValue("UseIndicatorLEDAsTorch", ui->redButton->isChecked());
 
   if (aboutForm) delete aboutForm;
   if (strobeForm) delete strobeForm;
@@ -387,6 +393,13 @@ void MainWindow::setOffTimerDuration(
 }
 
 
+void MainWindow::setFlashAfterTimeout(
+  bool flag)
+{
+  flashAfterTimeout = flag;
+}
+
+
 void MainWindow::strobe()
 {
   // Do nothing if camera cover is closed:
@@ -411,7 +424,7 @@ void MainWindow::updateCameraCover(
 
     turnTorchOff();
 
-    // If "coverClosesApp" has been set, exit Linguine immediately:
+    // If "coverClosesApp" has been set, exit Lanterne immediately:
     if (coverClosesApp)
     {
       QApplication::quit();
@@ -666,6 +679,21 @@ void MainWindow::torchTimeout()
   }
 
   offTimer.stop();
+
+  if (flashAfterTimeout)
+  {
+    // Start flashing the low-power LED, to help find the phone now that the
+    // torch is off.
+    ui->whiteButton->setChecked(false);
+    ui->redButton->setChecked(true);
+    useIndicatorLED(true);
+    if (!morseForm)
+    {
+      morseForm = new LanMorseForm(this);
+    }
+    morseForm->startE();
+    loopRunning = true;
+  }
 }
 
 

@@ -1,3 +1,13 @@
+lanterne (0.5.7) unstable; urgency=low
+  * Added option to flash the low-power LED when the Torch timer goes off.
+
+ -- John Pietrzak <jpietrzak8@gmail.com>  Fri, 28 Mar 2014 05:50:11 -0400
+
+lanterne (0.5.6) unstable; urgency=low
+  * Fixed QSettings bug introduced in 0.5.5
+
+ -- John Pietrzak <jpietrzak8@gmail.com>  Sat, 15 Jun 2013 00:24:03 -0400
+
 lanterne (0.5.5) unstable; urgency=low
   * Added buttons to the main window to switch between the white and red LEDs.
   * Cleaned up preferences window slightly; choosing "ignore camera cover" now grays out any options based on the camera cover status.
