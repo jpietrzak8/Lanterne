@@ -684,8 +684,8 @@ void MainWindow::torchTimeout()
   {
     // Start flashing the low-power LED, to help find the phone now that the
     // torch is off.
-    ui->whiteButton->setChecked(false);
-    ui->redButton->setChecked(true);
+//    ui->whiteButton->setChecked(false);
+//    ui->redButton->setChecked(true);
     useIndicatorLED(true);
     if (!morseForm)
     {
@@ -693,6 +693,20 @@ void MainWindow::torchTimeout()
     }
     morseForm->startE();
     loopRunning = true;
+  }
+
+  QMaemo5InformationBox::information(
+    0, "Lanterne torch timed out", 0);
+
+  if (flashAfterTimeout)
+  {
+    morseForm->stopTimer();
+    loopRunning = false;
+
+    if (ui->whiteButton->isChecked())
+    {
+      useIndicatorLED(false);
+    }
   }
 }
 

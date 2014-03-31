@@ -1,3 +1,8 @@
+lanterne (0.5.8) unstable; urgency=low
+  * Torch timeout now improved, providing the user a message when it completes.
+
+ -- John Pietrzak <jpietrzak8@gmail.com>  Mon, 31 Mar 2014 17:18:10 -0400
+
 lanterne (0.5.7) unstable; urgency=low
   * Added option to flash the low-power LED when the Torch timer goes off.
 
