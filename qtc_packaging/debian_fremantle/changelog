@@ -1,3 +1,9 @@
+lanterne (0.5.9) unstable; urgency=low
+  * Added option to lock screen when camera cover is shut.
+  * Cleaned up the morse code UI a bit.
+
+ -- John Pietrzak <jpietrzak8@gmail.com>  Wed, 02 Apr 2014 19:40:50 -0400
+
 lanterne (0.5.8) unstable; urgency=low
   * Torch timeout now improved, providing the user a message when it completes.
 

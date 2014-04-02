@@ -57,7 +57,24 @@ LanPreferencesForm::LanPreferencesForm(
   ui->startupComboBox->addItem("Pulsed", Pulsed_Mode);
   ui->startupComboBox->addItem("SOS", SOS_Mode);
 
+/*
+  // Set up the spin box values:
+  ui->dotDurationSpinBox->setMinimum(10);
+  ui->dotDurationSpinBox->setMaximum(10000);
+  ui->dotDurationSpinBox->setValue(100);
+*/
+
   QSettings settings("pietrzak.org", "Lanterne");
+
+  if (settings.contains("CurrentDotDuration"))
+  {
+    int cdd = settings.value("CurrentDotDuration").toInt();
+
+    if ((cdd >= 10) && (cdd <= 1000))
+    {
+      ui->dotDurationSpinBox->setValue(cdd);
+    }
+  }
 
   if (settings.contains("UseTorchButtonAsMorseKey"))
   {
@@ -93,6 +110,15 @@ LanPreferencesForm::LanPreferencesForm(
     int ibl = settings.value("IndicatorBrightnessLevel").toInt();
 
     ui->indicatorBrightnessComboBox->setCurrentIndex(ibl);
+  }
+
+  if (settings.contains("CoverLocksScreen"))
+  {
+    bool cls = settings.value("CoverLocksScreen").toBool();
+
+    ui->lockScreenCheckBox->setChecked(cls);
+
+    mainWindow->setCoverLocksScreen(cls);
   }
 
   if (settings.contains("CoverClosesApp"))
@@ -177,6 +203,10 @@ LanPreferencesForm::~LanPreferencesForm()
   QSettings settings("pietrzak.org", "Lanterne");
 
   settings.setValue(
+    "CurrentDotDuration",
+    ui->dotDurationSpinBox->value());
+
+  settings.setValue(
     "UseTorchButtonAsMorseKey",
     ui->morseKeyCheckBox->isChecked());
 
@@ -193,6 +223,10 @@ LanPreferencesForm::~LanPreferencesForm()
   settings.setValue(
     "IndicatorBrightnessLevel",
     ui->indicatorBrightnessComboBox->currentIndex());
+
+  settings.setValue(
+    "CoverLocksScreen",
+    ui->lockScreenCheckBox->isChecked());
 
   settings.setValue(
     "CoverClosesApp",
@@ -241,6 +275,12 @@ StartupMode LanPreferencesForm::getStartupMode()
 }
 
 
+int LanPreferencesForm::getDotDuration()
+{
+  return ui->dotDurationSpinBox->value();
+}
+
+
 void LanPreferencesForm::on_morseKeyCheckBox_toggled(bool checked)
 {
   mainWindow->setUseTorchButtonAsMorseKey(checked);
@@ -267,6 +307,12 @@ void LanPreferencesForm::on_indicatorBrightnessComboBox_currentIndexChanged(
   int index)
 {
   mainWindow->setIndicatorBrightnessLevel(index + 1);
+}
+
+
+void LanPreferencesForm::on_lockScreenCheckBox_toggled(bool checked)
+{
+  mainWindow->setCoverLocksScreen(checked);
 }
 
 

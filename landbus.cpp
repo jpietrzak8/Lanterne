@@ -54,7 +54,8 @@ const QDBusArgument & operator>>(
 
 LanDBus::LanDBus()
   : halCameraShutter(0),
-    halCameraButtonLaunch(0)
+    halCameraButtonLaunch(0),
+    mce(0)
 {
   // Set up the camera shutter interface:
 
@@ -102,14 +103,23 @@ LanDBus::~LanDBus()
 }
 
 
-void LanDBus::checkCameraCoverStatus()
+bool LanDBus::currentCameraCoverStatus()
 {
   QDBusMessage message =
     halCameraShutter->call("GetProperty", "button.state.value");
 
-  // Should check for errors here!
+  return message.arguments().at(0).toBool();
+}
 
-  emit cameraCoverChanged(message.arguments().at(0).toBool());
+
+void LanDBus::lockScreen()
+{
+  if (!mce)
+  {
+    startMCEInterface();
+  }
+
+  mce->call("req_tklock_mode_change", "locked");
 }
 
 
@@ -119,7 +129,13 @@ void LanDBus::cameraCoverPropertyModified(
 {
   Q_UNUSED(count);
   Q_UNUSED(properties);
-  checkCameraCoverStatus();
+
+  QDBusMessage message =
+    halCameraShutter->call("GetProperty", "button.state.value");
+
+  // Should check for errors here!
+
+  emit cameraCoverChanged(message.arguments().at(0).toBool());
 }
 
 
@@ -134,4 +150,14 @@ void LanDBus::cameraLaunchPropertyModified(
     halCameraButtonLaunch->call("GetProperty", "button.state.value");
 
   emit cameraButtonChanged(message.arguments().at(0).toBool());
+}
+
+
+void LanDBus::startMCEInterface()
+{
+  mce = new QDBusInterface(
+    "com.nokia.mce",
+    "/com/nokia/mce/request",
+    "com.nokia.mce.request",
+    QDBusConnection::systemBus());
 }

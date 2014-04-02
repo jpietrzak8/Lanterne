@@ -89,6 +89,9 @@ public:
   void setIndicatorBrightnessLevel(
     int brightness);
 
+  void setCoverLocksScreen(
+    bool cls);
+
   void setCoverClosesApp(
     bool cca);
 
@@ -100,6 +103,8 @@ public:
 
   void setFlashAfterTimeout(
     bool flag);
+
+  int dotDuration();
 
 public slots:
   void strobe();
@@ -146,6 +151,7 @@ private:
 
   bool useIndicatorLEDAsTorch;
 
+  bool coverLocksScreen;
   bool coverClosesApp;
 
   bool useCameraButton;

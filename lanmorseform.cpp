@@ -50,21 +50,7 @@ LanMorseForm::LanMorseForm(
   setupSOSCode();
   setupECode();
 
-  ui->dotDurationSpinBox->setMinimum(10);
-  ui->dotDurationSpinBox->setMaximum(1000);
-  ui->dotDurationSpinBox->setValue(100);
-
   QSettings settings("pietrzak.org", "Lanterne");
-
-  if (settings.contains("CurrentDotDuration"))
-  {
-    int cdd = settings.value("CurrentDotDuration").toInt();
-
-    if ((cdd >= 10) && (cdd <= 1000))
-    {
-      ui->dotDurationSpinBox->setValue(cdd);
-    }
-  }
 
   if (settings.contains("RunMorseContinuously"))
   {
@@ -78,10 +64,6 @@ LanMorseForm::LanMorseForm(
 LanMorseForm::~LanMorseForm()
 {
   QSettings settings("pietrzak.org", "Lanterne");
-
-  settings.setValue(
-    "CurrentDotDuration",
-    ui->dotDurationSpinBox->value());
 
   settings.setValue(
     "RunMorseContinuously",
@@ -109,7 +91,7 @@ void LanMorseForm::startSOS()
   sosCodePosition = sosCodeBits.begin();
   timer = new QTimer(this);
   connect (timer, SIGNAL(timeout()), this, SLOT(runSOSCode()));
-  timer->start(ui->dotDurationSpinBox->value());
+  timer->start(mainWindow->dotDuration());
 }
 
 
@@ -129,7 +111,7 @@ void LanMorseForm::startE()
   eCodePosition = eCodeBits.begin();
   timer = new QTimer(this);
   connect (timer, SIGNAL(timeout()), this, SLOT(runECode()));
-  timer->start(ui->dotDurationSpinBox->value());
+  timer->start(mainWindow->dotDuration());
 }
 
 
@@ -148,7 +130,7 @@ void LanMorseForm::startSupressLEDs()
 
   timer = new QTimer(this);
   connect(timer, SIGNAL(timeout()), this, SLOT(runSupressLEDs()));
-  timer->start(ui->dotDurationSpinBox->value());
+  timer->start(mainWindow->dotDuration());
 }
 
 
@@ -182,7 +164,7 @@ void LanMorseForm::on_morseButton_clicked()
   morseCodePosition = morseCodeBits.begin();
   timer = new QTimer(this);
   connect (timer, SIGNAL(timeout()), this, SLOT(runMorseCode()));
-  timer->start(ui->dotDurationSpinBox->value());
+  timer->start(mainWindow->dotDuration());
 
   // Flag that we are now transmitting morse:
   morseRunning = true;
@@ -205,7 +187,7 @@ void LanMorseForm::on_pauseButton_clicked()
     timer = new QTimer(this);
 
     connect(timer, SIGNAL(timeout()), this, SLOT(runMorseCode()));
-    timer->start(ui->dotDurationSpinBox->value());
+    timer->start(mainWindow->dotDuration());
 
     morsePaused = false;
 

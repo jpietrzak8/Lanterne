@@ -50,6 +50,7 @@ MainWindow::MainWindow(
     cameraCoverClosed(true),
     ignoreCameraCover(false),
     useIndicatorLEDAsTorch(false),
+    coverLocksScreen(false),
     coverClosesApp(false),
     useCameraButton(false),
     useOffTimer(false),
@@ -80,7 +81,7 @@ MainWindow::MainWindow(
     SLOT(updateCameraCover(bool)));
 
   // Initialize the current camera cover status:
-  dbus.checkCameraCoverStatus();
+  cameraCoverClosed = dbus.currentCameraCoverStatus();
 
   // Set up DBus camera button monitoring:
   connect(
@@ -360,6 +361,13 @@ void MainWindow::setIndicatorBrightnessLevel(
 }
 
 
+void MainWindow::setCoverLocksScreen(
+  bool cls)
+{
+  coverLocksScreen = cls;
+}
+
+
 void MainWindow::setCoverClosesApp(
   bool cca)
 {
@@ -400,6 +408,19 @@ void MainWindow::setFlashAfterTimeout(
 }
 
 
+int MainWindow::dotDuration()
+{
+  if (preferencesForm)
+  {
+    return preferencesForm->getDotDuration();
+  }
+  else
+  {
+    return 100; // a safe default value
+  }
+}
+
+
 void MainWindow::strobe()
 {
   // Do nothing if camera cover is closed:
@@ -423,6 +444,12 @@ void MainWindow::updateCameraCover(
     }
 
     turnTorchOff();
+
+    // If "coverLocksScreen" set, lock the screen:
+    if (coverLocksScreen)
+    {
+      dbus.lockScreen();
+    }
 
     // If "coverClosesApp" has been set, exit Lanterne immediately:
     if (coverClosesApp)

@@ -48,7 +48,9 @@ public:
   LanDBus();
   ~LanDBus();
 
-  void checkCameraCoverStatus();
+  bool currentCameraCoverStatus();
+
+  void lockScreen();
 
 signals:
   void cameraCoverChanged(
@@ -69,6 +71,9 @@ public slots:
 private:
   QDBusInterface *halCameraShutter;
   QDBusInterface *halCameraButtonLaunch;
+  QDBusInterface *mce;
+
+  void startMCEInterface();
 };
 
 #endif // LANDBUS_H
