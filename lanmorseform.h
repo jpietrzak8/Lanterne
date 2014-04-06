@@ -28,14 +28,13 @@
 #include <list>
 
 class QTimer;
+class MainWindow;
 
 typedef std::list<bool> LanBoolList;
 
 namespace Ui {
 class LanMorseForm;
 }
-
-class MainWindow;
 
 class LanMorseForm : public QWidget
 {

@@ -19,19 +19,6 @@
      <number>8</number>
     </property>
     <item>
-     <widget class="QLabel" name="ledChoiceLabel">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="text">
-       <string>Choose LED Color:</string>
-      </property>
-     </widget>
-    </item>
-    <item>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
        <widget class="QRadioButton" name="whiteButton">
@@ -141,6 +128,7 @@
      <string>Lanterne</string>
     </property>
     <addaction name="actionStrobe_Flash"/>
+    <addaction name="actionLight_Sensor"/>
     <addaction name="actionPreferences"/>
     <addaction name="actionAbout"/>
    </widget>
@@ -159,6 +147,11 @@
   <action name="actionStrobe_Flash">
    <property name="text">
     <string>Strobe Flash</string>
+   </property>
+  </action>
+  <action name="actionLight_Sensor">
+   <property name="text">
+    <string>Light Sensor</string>
    </property>
   </action>
  </widget>

@@ -32,7 +32,8 @@ SOURCES += main.cpp mainwindow.cpp \
     lanstrobeform.cpp \
     lanaudioinputform.cpp \
     landbus.cpp \
-    lanpreferencesform.cpp
+    lanpreferencesform.cpp \
+    lanlightsensorform.cpp
 HEADERS += mainwindow.h \
     lanflashled.h \
     lanexception.h \
@@ -41,13 +42,15 @@ HEADERS += mainwindow.h \
     lanstrobeform.h \
     lanaudioinputform.h \
     landbus.h \
-    lanpreferencesform.h
+    lanpreferencesform.h \
+    lanlightsensorform.h
 FORMS += mainwindow.ui \
     lanaboutform.ui \
     lanmorseform.ui \
     lanstrobeform.ui \
     lanaudioinputform.ui \
-    lanpreferencesform.ui
+    lanpreferencesform.ui \
+    lanlightsensorform.ui
 
 # Please do not modify the following two lines. Required for deployment.
 include(deployment.pri)

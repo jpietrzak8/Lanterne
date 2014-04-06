@@ -34,6 +34,7 @@ class LanAboutForm;
 class LanStrobeForm;
 class LanMorseForm;
 class LanPreferencesForm;
+class LanLightSensorForm;
 
 namespace Ui {
   class MainWindow;
@@ -133,6 +134,8 @@ private slots:
 
   void torchTimeout();
 
+  void on_actionLight_Sensor_triggered();
+
 private:
   void setupOffTimer();
 
@@ -140,7 +143,9 @@ private:
   LanAboutForm *aboutForm;
   LanStrobeForm *strobeForm;
   LanMorseForm *morseForm;
+  LanLightSensorForm *lightSensorForm;
   LanPreferencesForm *preferencesForm;
+
   bool loopRunning;
 
   bool useTorchButtonAsMorseKey;

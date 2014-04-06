@@ -30,6 +30,7 @@
 #include "lanstrobeform.h"
 #include "lanmorseform.h"
 #include "lanpreferencesform.h"
+#include "lanlightsensorform.h"
 #include <QTimer>
 #include <QDesktopWidget>
 #include <QSettings>
@@ -44,6 +45,7 @@ MainWindow::MainWindow(
     aboutForm(0),
     strobeForm(0),
     morseForm(0),
+    lightSensorForm(0),
     preferencesForm(0),
     loopRunning(false),
     useTorchButtonAsMorseKey(false),
@@ -160,6 +162,7 @@ MainWindow::~MainWindow()
   if (aboutForm) delete aboutForm;
   if (strobeForm) delete strobeForm;
   if (morseForm) delete morseForm;
+  if (lightSensorForm) delete lightSensorForm;
   if (preferencesForm) delete preferencesForm;
 
   if (led) delete led;
@@ -484,6 +487,17 @@ void MainWindow::updateCameraButton(
       }
     }
   }
+}
+
+
+void MainWindow::on_actionLight_Sensor_triggered()
+{
+  if (!lightSensorForm)
+  {
+    lightSensorForm = new LanLightSensorForm(this);
+  }
+
+  lightSensorForm->show();
 }
 
 

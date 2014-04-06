@@ -1,3 +1,8 @@
+lanterne (0.5.10) unstable; urgency=low
+  * Added a light sensor.  (Not sure if it will be useful...)
+
+ -- John Pietrzak <jpietrzak8@gmail.com>  Sun, 06 Apr 2014 18:16:24 -0400
+
 lanterne (0.5.9) unstable; urgency=low
   * Added option to lock screen when camera cover is shut.
   * Cleaned up the morse code UI a bit.
