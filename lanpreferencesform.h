@@ -29,7 +29,8 @@ enum StartupMode
 {
   SteadyOn_Mode,
   Pulsed_Mode,
-  SOS_Mode
+  SOS_Mode,
+  LightSensor_Mode
 };
 
 namespace Ui {

@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>Light Sensor</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
@@ -34,6 +34,12 @@
      </item>
      <item>
       <widget class="QLCDNumber" name="lcdNumber">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="smallDecimalPoint">
         <bool>false</bool>
        </property>
@@ -47,7 +53,7 @@
    <item>
     <widget class="QCheckBox" name="torchTriggerCheckBox">
      <property name="text">
-      <string>Start Torch when light reaches specified level</string>
+      <string>Start torch at specified sensor level</string>
      </property>
     </widget>
    </item>
@@ -62,7 +68,7 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>Trigger Value:</string>
+        <string>Minimum Sensor Value: </string>
        </property>
       </widget>
      </item>

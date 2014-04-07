@@ -34,6 +34,7 @@ LanLightSensorForm::LanLightSensorForm(
   : QWidget(mw),
     mainWindow(mw),
     timer(0),
+    torchSwitchedOn(false),
     ui(new Ui::LanLightSensorForm)
 {
   ui->setupUi(this);
@@ -121,15 +122,27 @@ void LanLightSensorForm::update()
   {
     if (ambientLight <= ui->triggerLevelSpinBox->value())
     {
-      mainWindow->turnTorchOn();
+      if (!torchSwitchedOn)
+      {
+        mainWindow->turnTorchOn();
+        torchSwitchedOn = true;
+      }
     }
     else
     {
-      mainWindow->turnTorchOff();
+      if (torchSwitchedOn)
+      {
+        mainWindow->turnTorchOff();
+        torchSwitchedOn = false;
+      }
     }
   }
   else
   {
-    mainWindow->turnTorchOff();
+    if (torchSwitchedOn)
+    {
+      mainWindow->turnTorchOff();
+      torchSwitchedOn = false;
+    }
   }
 }

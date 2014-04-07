@@ -120,6 +120,7 @@ private slots:
   void on_actionStrobe_Flash_triggered();
   void on_actionPreferences_triggered();
   void on_actionAbout_triggered();
+  void on_actionLight_Sensor_triggered();
 
   void on_whiteButton_clicked();
   void on_redButton_clicked();
@@ -133,8 +134,6 @@ private slots:
 //  void on_supressLEDButton_clicked();
 
   void torchTimeout();
-
-  void on_actionLight_Sensor_triggered();
 
 private:
   void setupOffTimer();

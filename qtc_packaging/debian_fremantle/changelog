@@ -1,3 +1,8 @@
+lanterne (0.5.11) unstable; urgency=low
+  * Connected light sensor to timeout and startup preferences.  Also, some UI cleanup for the light sensor.
+
+ -- John Pietrzak <jpietrzak8@gmail.com>  Mon, 07 Apr 2014 18:28:47 -0400
+
 lanterne (0.5.10) unstable; urgency=low
   * Added a light sensor.  (Not sure if it will be useful...)
 

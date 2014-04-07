@@ -56,6 +56,7 @@ LanPreferencesForm::LanPreferencesForm(
   ui->startupComboBox->addItem("Steady On", SteadyOn_Mode);
   ui->startupComboBox->addItem("Pulsed", Pulsed_Mode);
   ui->startupComboBox->addItem("SOS", SOS_Mode);
+  ui->startupComboBox->addItem("Light Sensor", LightSensor_Mode);
 
 /*
   // Set up the spin box values:

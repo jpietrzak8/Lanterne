@@ -57,6 +57,8 @@ private:
 
   QTimer *timer;
 
+  bool torchSwitchedOn;
+
   Ui::LanLightSensorForm *ui;
 };
 

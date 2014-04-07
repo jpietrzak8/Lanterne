@@ -117,6 +117,10 @@ MainWindow::MainWindow(
       on_sosButton_clicked();
       break;
 
+    case LightSensor_Mode:
+      on_actionLight_Sensor_triggered();
+      break;
+
     default:
       // Do nothing here.
       break;
